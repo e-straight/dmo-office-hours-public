@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GitHub Copilot App — Power User Handout</title>
+<style>
+  :root {
+    --bg: #ffffff; --bg-soft: #f6f8fa; --bg-sunken: #eaeef2;
+    --border: #d1d9e0; --border-muted: #d8dee4;
+    --text: #1f2328; --text-muted: #59636e;
+    --accent: #0969da; --accent-soft: #ddf4ff; --accent-border: #b6e3ff;
+    --green: #1a7f37; --green-emphasis: #1f883d; --green-soft: #dafbe1;
+    --amber: #9a6700; --amber-emphasis: #bf8700; --amber-soft: #fff8c5;
+    --purple: #8250df; --purple-soft: #fbefff;
+    --header: #1f2328;
+    --radius: 6px; --shadow: 0 1px 3px rgba(31,35,40,.06);
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: var(--font); color: var(--text); background: var(--bg-soft); line-height: 1.55; font-size: 15.5px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .page { max-width: 940px; margin: 0 auto; padding: 0 20px 50px; }
+  .tabs { display:flex; gap:8px; margin:0 0 16px; background: var(--bg); border:1px solid var(--border); border-radius:999px; padding:5px; box-shadow: var(--shadow); }
+  .tabs a { flex:1; text-align:center; border-radius:999px; padding:8px 12px; font-size:13.5px; font-weight:650; color: var(--text-muted); }
+  .tabs a:hover { background: var(--bg-soft); color: var(--text); text-decoration:none; }
+  .tabs a.active { background: var(--accent); color:#fff; }
+
+  header.hero { background: var(--header); color:#fff; border-radius:0 0 12px 12px; padding: 26px 30px 24px; margin-bottom: 22px; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .brand { display:flex; align-items:center; gap:9px; margin-bottom:14px; font-weight:600; font-size:14px; }
+  .brand svg { flex:none; }
+  .brand .divider { width:1px; height:18px; background:rgba(255,255,255,.25); }
+  .brand .product { color:rgba(255,255,255,.72); font-weight:400; }
+  header.hero .eyebrow { display:inline-block; background: rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.22); padding:3px 11px; border-radius:999px; font-size:12.5px; font-weight:600; margin-bottom:12px; }
+  header.hero h1 { margin:0 0 6px; font-size:27px; }
+  header.hero p { margin:0; font-size:16px; color: rgba(255,255,255,.94); }
+
+  .grid { display: flex; flex-direction: column; gap: 16px; }
+  .card { background: var(--bg); border:1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); }
+  .card h2 { margin:0 0 12px; font-size:17px; display:flex; align-items:center; gap:9px; }
+  .card h3 { margin:18px 0 8px; font-size:15.5px; }
+  .num { width:26px; height:26px; border-radius:50%; background: var(--accent); color:#fff; display:inline-grid; place-items:center; font-weight:700; font-size:14px; flex:none; }
+  .num.g { background: var(--green); }
+  .num.p { background: var(--purple); }
+  ul, ol { padding-left: 20px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  code { font-family: var(--mono); font-size:85%; background: rgba(129,139,152,.15); padding:.2em .4em; border-radius:6px; border:none; }
+  strong { font-weight: 650; }
+  p { margin: 8px 0; }
+
+  .note { border-radius: var(--radius); padding: 11px 13px 11px 40px; margin: 12px 0; position: relative; font-size:14px; border:1px solid var(--border-muted); border-left-width:3px; background: var(--bg); }
+  .note::before { position:absolute; left:13px; top:10px; font-size:15px; }
+  .note strong { font-weight:600; }
+  .note.tip { background: var(--accent-soft); border-left-color: var(--accent); } .note.tip::before { content:"💡"; }
+  .note.warn { background: var(--amber-soft); border-left-color: var(--amber-emphasis); } .note.warn::before { content:"⚠️"; }
+  .note.good { background: var(--green-soft); border-left-color: var(--green-emphasis); } .note.good::before { content:"✅"; }
+  .note.key { background: var(--purple-soft); border-left-color: var(--purple); } .note.key::before { content:"⭐"; }
+
+  .prompt { display:flex; align-items:flex-start; gap:9px; background: var(--bg-sunken); border:1px solid var(--border); border-radius:7px; padding:9px 10px; margin:7px 0; }
+  .prompt .ptext { flex:1; font-size:13.5px; }
+  .copy-btn { flex:none; background: var(--bg); border:1px solid var(--border); border-radius:6px; padding:3px 9px; font-size:12px; font-weight:600; cursor:pointer; color: var(--text-muted); font-family: var(--font); transition: all .15s; }
+  .copy-btn:hover { background: var(--accent); color:#fff; border-color: var(--accent); }
+  .copy-btn.done { background: var(--green); color:#fff; border-color: var(--green); }
+
+  .table-wrap { overflow-x:auto; margin:12px 0; border:1px solid var(--border); border-radius:var(--radius); }
+  table { border-collapse:collapse; width:100%; font-size:13.5px; }
+  th, td { text-align:left; padding:8px 11px; border-bottom:1px solid var(--border); vertical-align:top; }
+  thead th { background:var(--bg-soft); font-weight:650; }
+  tbody tr:nth-child(2n) { background:var(--bg-soft); }
+  tbody tr:last-child td { border-bottom:none; }
+
+  .pill { display:inline-block; font-size:12px; font-weight:650; padding:2px 8px; border-radius:999px; background:var(--accent-soft); color:var(--accent); margin-left:6px; }
+  .graphic { border:1px solid var(--border); border-radius:12px; background:linear-gradient(135deg, #ffffff 0%, #f6f8fa 100%); padding:14px; margin:14px 0; overflow:hidden; }
+  .graphic-title { font-size:12px; font-weight:700; letter-spacing:.4px; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px; }
+  .fleet-map { display:grid; grid-template-columns: 1fr auto 1.6fr auto 1fr; gap:10px; align-items:center; }
+  .hub-node, .agent-node, .output-node, .state-node { border:1px solid var(--border); border-radius:12px; background:var(--bg); padding:11px; box-shadow:var(--shadow); }
+  .hub-node { text-align:center; background:var(--header); color:#fff; }
+  .hub-node .sub, .agent-node .sub, .output-node .sub, .state-node .sub { display:block; font-size:11.5px; color:var(--text-muted); line-height:1.3; margin-top:3px; }
+  .hub-node .sub { color:rgba(255,255,255,.72); }
+  .agent-stack { display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
+  .agent-node { border-top:3px solid var(--accent); }
+  .agent-node.review { border-top-color:var(--purple); }
+  .agent-node.cloud { border-top-color:var(--green); }
+  .output-stack { display:grid; gap:8px; }
+  .output-node { background:var(--green-soft); border-color:#b7e4c0; }
+  .arrow { color:var(--text-muted); font-weight:700; text-align:center; }
+  .cloud-lifecycle { display:grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap:8px; align-items:stretch; }
+  .state-node { text-align:center; min-height:86px; display:flex; flex-direction:column; justify-content:center; }
+  .state-node.active { border-top:3px solid var(--green); }
+  .state-node.stopped { border-top:3px solid var(--amber-emphasis); }
+  .state-node.deleted { border-top:3px solid var(--text-muted); }
+  .model-router { display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; }
+  .model-card { border:1px solid var(--border); border-radius:12px; background:var(--bg); padding:11px; min-height:112px; box-shadow:var(--shadow); }
+  .model-card .tag { display:inline-block; font-size:11px; font-weight:700; border-radius:999px; padding:2px 7px; margin-bottom:7px; }
+  .model-card.fast .tag { background:var(--green-soft); color:var(--green); }
+  .model-card.plan .tag { background:var(--accent-soft); color:var(--accent); }
+  .model-card.deep .tag { background:var(--purple-soft); color:var(--purple); }
+  .model-card.review .tag { background:var(--amber-soft); color:var(--amber); }
+  .model-card b { display:block; font-size:13.5px; margin-bottom:4px; }
+  .model-card span { display:block; font-size:12px; color:var(--text-muted); line-height:1.35; }
+  .docs-line { font-size:12.5px; color:var(--text-muted); margin:8px 0 10px; }
+  .docs-line strong { color:var(--text); }
+  .print-btn { position: fixed; bottom:20px; right:20px; background: var(--green-emphasis); color:#fff; border:1px solid rgba(31,35,40,.15); border-radius:var(--radius); padding:10px 16px; font-weight:600; font-size:13.5px; cursor:pointer; box-shadow:0 6px 18px rgba(31,35,40,.18); font-family: var(--font); }
+  .print-btn:hover { background: var(--green); }
+
+  @media (max-width: 720px){
+    .tabs { border-radius:12px; flex-direction:column; }
+    .fleet-map, .cloud-lifecycle, .model-router { grid-template-columns:1fr; }
+    .agent-stack { grid-template-columns:1fr; }
+    .arrow { transform:rotate(90deg); }
+  }
+  @media print {
+    body { background:#fff; font-size: 12px; }
+    header.hero { background:#1f2328 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; border-radius:0; padding:18px 22px; }
+    .tabs, .print-btn { display:none; }
+    .card { box-shadow:none; break-inside: avoid; }
+    .page { padding-bottom: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="page" style="padding-bottom:0">
+    <div class="brand">
+      <svg height="26" width="26" viewBox="0 0 16 16" fill="#fff" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.075-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>
+      <span>GitHub</span><span class="divider"></span><span class="product">Copilot</span>
+    </div>
+    <span class="eyebrow">🚀 Power User · Advanced workflows</span>
+    <h1>GitHub Copilot App — Power User Handout</h1>
+    <p>Move from one-off chats to parallel, visible, repeatable agent workflows.</p>
+  </div>
+</header>
+
+<div class="page">
+
+  <nav class="tabs" aria-label="Office hours handouts">
+    <a href="quick-start-handout.html">Quick start</a>
+    <a class="active" href="power-user-handout.html">Power user</a>
+  </nav>
+
+  <div class="note good" style="margin-top:0"><strong>Start here only after the quick start:</strong>&nbsp; you should already have the app installed, signed in, and one successful session completed against a safe folder or repo.</div>
+
+  <div class="grid">
+
+    <div class="card">
+      <h2><span class="num">1</span> Think “control center,” not “chat box”</h2>
+      <p>The beginner move is one prompt against one folder. The power-user move is several scoped agents, each with a clear plan, visible artifacts, and a review path back into GitHub.</p>
+      <p class="docs-line"><strong>Docs:</strong> <a href="https://docs.github.com/en/copilot/concepts/agents/github-copilot-app">About the GitHub Copilot app</a></p>
+      <div class="note key"><strong>Builder signal:</strong> GitHub calls the app an <a href="https://x.com/github/status/2074916486271922558">“all-in-one control center”</a> for agent-driven development. Evan Boyle’s <a href="https://x.com/_Evan_Boyle/status/2067282259695272344">GA post</a> frames the same shift around multi-repo / multi-session work with <code>/orchestrate</code>, canvases, isolated worktrees, cloud sessions, and automations, while Pierce Boggan describes it as the <a href="https://x.com/pierceboggan/status/2061868635241828688">desktop home for agent-native software development</a>.</div>
+      <div class="graphic" role="img" aria-label="A user directs an agent fleet into pull requests and reusable knowledge.">
+        <div class="graphic-title">Agent fleet pattern</div>
+        <div class="fleet-map">
+          <div class="hub-node"><strong>You</strong><span class="sub">scope · steer · approve</span></div>
+          <div class="arrow">→</div>
+          <div class="agent-stack">
+            <div class="agent-node"><strong>Bug fix</strong><span class="sub">isolated branch</span></div>
+            <div class="agent-node cloud"><strong>Tests</strong><span class="sub">cloud sandbox</span></div>
+            <div class="agent-node"><strong>Docs</strong><span class="sub">low-risk edits</span></div>
+            <div class="agent-node review"><strong>Reviewer</strong><span class="sub">second model</span></div>
+          </div>
+          <div class="arrow">→</div>
+          <div class="output-stack">
+            <div class="output-node"><strong>PRs</strong><span class="sub">reviewable diffs</span></div>
+            <div class="output-node"><strong>Canvas</strong><span class="sub">status + blockers</span></div>
+            <div class="output-node"><strong>Skills</strong><span class="sub">reusable process</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Pattern</th><th>What it unlocks</th><th>Try this</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agent fleet</strong></td><td>Multiple isolated workstreams without collisions, optionally running in cloud sandboxes.</td><td>Run a small fleet: one bug-fix agent, one test-hardening agent, one docs agent, one reviewer.</td></tr>
+          <tr><td><strong>Persistent cloud sessions</strong></td><td>Pause work without losing environment state, then resume later or from another device.</td><td>Use cloud sandboxes for long-running or compute-heavy work that should not tie up your laptop.</td></tr>
+          <tr><td><strong>Issue-to-PR flow</strong></td><td>Start from issue / PR context and land work through review.</td><td>Ask for a plan first, approve it, then let Copilot implement and prepare the PR.</td></tr>
+          <tr><td><strong>Model routing</strong></td><td>Match model, reasoning effort, and cost to the job.</td><td>Use faster / cheaper models for mechanical edits and stronger reasoning for architecture, debugging, and review.</td></tr>
+          <tr><td><strong>Canvases</strong></td><td>Visible shared artifacts instead of opaque chat history.</td><td>Create a kanban board, launch plan, triage dashboard, release checklist, or decision log.</td></tr>
+          <tr><td><strong>Automations</strong></td><td>Repeatable work runs on a schedule or on demand.</td><td>Automate release notes, research briefs, dependency checks, triage, or recurring status updates.</td></tr>
+          <tr><td><strong>Verification loops</strong></td><td>Separate maker and checker roles for more reliable results.</td><td>Have one session implement, then a second session critique, test, and find missing edge cases.</td></tr>
+          <tr><td><strong>Skills</strong></td><td>Reusable team workflows with consistent steps and guardrails.</td><td>Turn repeated workflows into shareable skills or instructions.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num g">2</span> High-value power workflows</h2>
+      <h3>Agent fleet orchestration</h3>
+      <p>Treat sessions like a small fleet: each agent gets one job, one success condition, one workspace, and one review surface. Use a canvas to track the fleet so you can steer at the portfolio level instead of babysitting individual chats.</p>
+      <p class="docs-line"><strong>Docs:</strong> <a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions">Working with agent sessions</a></p>
+      <div class="note key"><strong>Builder signal:</strong> Evan Boyle highlights <a href="https://x.com/_Evan_Boyle/status/2067282259695272344">multi-session orchestration and persistent cloud sessions</a>, then calls <a href="https://x.com/_Evan_Boyle/status/2069168895513276516"><code>/orchestrate</code> one of the app's killer features</a>. GitHub’s Evan deep dive connects <a href="https://x.com/github/status/2069881807999479943">automations, MCP integrations, and custom skills</a> to repeatable background work.</div>
+      <div class="prompt"><span class="ptext">I want to run an agent fleet for this repo: bug-fix, test-hardening, docs, dependency audit, and independent reviewer. Create a fleet plan with session goals, workspace choice, model choice, risks, handoffs, and done criteria.</span><button class="copy-btn">Copy</button></div>
+
+      <h3>Plan-first issue work</h3>
+      <p>For complex or production-facing changes, make Copilot propose the path before it edits files.</p>
+      <div class="prompt"><span class="ptext">Create a plan for fixing issue #123. Do not change files yet. Identify risks, tests to run, and the smallest safe implementation path.</span><button class="copy-btn">Copy</button></div>
+
+      <h3>Persistent cloud sessions</h3>
+      <p>Use cloud sandboxes when work should keep its own saved state, run away from your laptop, or resume later. Good fits: heavy test suites, environment setup, dependency upgrades, cross-repo investigations, or long-running refactors.</p>
+      <p class="docs-line"><strong>Docs:</strong> <a href="https://docs.github.com/en/copilot/concepts/about-cloud-and-local-sandboxes">About cloud and local sandboxes</a></p>
+      <div class="graphic" role="img" aria-label="Cloud sandbox lifecycle from active to stopped to resumed or deleted.">
+        <div class="graphic-title">Cloud sandbox lifecycle</div>
+        <div class="cloud-lifecycle">
+          <div class="state-node active"><strong>Active</strong><span class="sub">agent runs tools, tests, and edits in GitHub-hosted infrastructure</span></div>
+          <div class="arrow">→</div>
+          <div class="state-node stopped"><strong>Stopped</strong><span class="sub">state snapshot saves files, environment, and in-progress work</span></div>
+          <div class="arrow">→</div>
+          <div class="state-node deleted"><strong>Resume or delete</strong><span class="sub">pick up later, from another device, or remove saved state</span></div>
+        </div>
+      </div>
+      <div class="prompt"><span class="ptext">This task may run for a while. Help me decide whether to use a local workspace or cloud sandbox. Consider setup cost, secrets, dependency install time, test runtime, billing, and whether I need to resume later.</span><button class="copy-btn">Copy</button></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num p">3</span> Fleet dashboards and canvases <span class="pill">big unlock</span></h2>
+      <p>Use canvases when the work needs structure: boards, dashboards, checklists, plans, docs, diffs, or decision records. They make agent work easier to steer than a long chat transcript.</p>
+      <p class="docs-line"><strong>Docs:</strong> <a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/working-with-canvas-extensions">Working with canvas extensions</a></p>
+      <div class="note key"><strong>Builder signal:</strong> James Montemagno shows a personal <a href="https://x.com/JamesMontemagno/status/2073574260900270236">“James Hub” canvas</a> for workload management, priorities, and time allocation, plus a <a href="https://x.com/JamesMontemagno/status/2074875431464124635">Copilot app canvas</a> for app submissions and tooling workflows.</div>
+      <div class="prompt"><span class="ptext">Create an agent fleet dashboard canvas that tracks each session's owner, workspace, mode, model, current hypothesis, last action, blocker, next decision, and PR / diff link.</span><button class="copy-btn">Copy</button></div>
+      <div class="prompt"><span class="ptext">Create an agentic kanban canvas for this project with backlog, in progress, blocked, ready for review, and done. Include actions to add, move, and assign cards.</span><button class="copy-btn">Copy</button></div>
+      <div class="prompt"><span class="ptext">Create a launch command-center canvas with milestones, risks, owners, open questions, linked issues, and next actions.</span><button class="copy-btn">Copy</button></div>
+      <div class="prompt"><span class="ptext">Create an issue triage dashboard that groups recent issues by theme, severity, customer impact, and recommended next action.</span><button class="copy-btn">Copy</button></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">4</span> Route the right model to the right job</h2>
+      <p>Advanced users should stop treating “the model” as one setting. Pick mode, model, reasoning effort, and provider based on risk and complexity. If you use BYOK, the app can add models from external providers and local / OpenAI-compatible endpoints.</p>
+      <p class="docs-line"><strong>Docs:</strong> <a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions#choosing-a-model">Choosing a model</a> · <a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/use-byok-models">Using your own model provider</a></p>
+      <div class="note key"><strong>Builder signal:</strong> The GitHub Copilot App release notes add <a href="https://x.com/GHCopilotLog/status/2072738366232158279"><code>/model</code>, <code>/models</code>, and auto model selection</a> that routes to the best available model for the request. The GitHub Changelog also notes the app is <a href="https://x.com/GHchangelog/status/2074520080927347029">available on all plans with BYOK support</a>.</div>
+      <div class="graphic" role="img" aria-label="Model routing ladder from fast routine work to deep reasoning and independent review.">
+        <div class="graphic-title">Model routing ladder</div>
+        <div class="model-router">
+          <div class="model-card fast"><span class="tag">Fast</span><b>Routine edits</b><span>Docs cleanup, renames, formatting, small fixes. Optimize for speed and cost.</span></div>
+          <div class="model-card plan"><span class="tag">Plan</span><b>Ambiguous work</b><span>Use quick chat or Plan mode to clarify requirements before opening a full session.</span></div>
+          <div class="model-card deep"><span class="tag">Deep</span><b>Hard problems</b><span>Architecture, migrations, debugging, and multi-step reasoning deserve stronger models.</span></div>
+          <div class="model-card review"><span class="tag">Review</span><b>Checker pass</b><span>Use a different strong model for correctness, security, tests, and edge cases.</span></div>
+        </div>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Job</th><th>Mode</th><th>Model / effort bias</th></tr></thead>
+        <tbody>
+          <tr><td>Requirements exploration</td><td>Quick chat or Plan</td><td>Auto or high-reasoning model; optimize for questions and alternatives.</td></tr>
+          <tr><td>Mechanical edits / rename / docs cleanup</td><td>Interactive or Autopilot</td><td>Fast, lower-cost model; keep the task narrow and reversible.</td></tr>
+          <tr><td>Debugging / architecture / migrations</td><td>Plan first, then Interactive</td><td>Higher-capability model and higher reasoning effort.</td></tr>
+          <tr><td>Independent review</td><td>Interactive reviewer session</td><td>Different strong model when possible; ask for correctness, security, tests, and edge cases only.</td></tr>
+          <tr><td>Local/private experimentation</td><td>Interactive</td><td>Approved BYOK or local provider if your policy allows it.</td></tr>
+          <tr><td>Recurring automation</td><td>Automation</td><td>Pick the cheapest model that reliably produces the required output shape.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="prompt"><span class="ptext">For this task, recommend the session mode, workspace type, model, reasoning effort, and whether a separate reviewer session is worth it. Explain the tradeoff between cost, speed, and risk.</span><button class="copy-btn">Copy</button></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num g">5</span> Automate research and recurring work</h2>
+      <p>Automations are strongest when the source set is stable and the output shape is repeatable. Be explicit about sources, citations, open questions, and what not to infer.</p>
+      <p class="docs-line"><strong>Docs:</strong> <a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/using-automations">Using automations</a></p>
+      <div class="note key"><strong>Builder signal:</strong> GitHub’s Evan interview covers <a href="https://x.com/github/status/2069881807999479943">automations and custom skills</a> for scheduled or recurring workflows. Pierce Boggan also points to <a href="https://x.com/pierceboggan/status/2069492009535218018">automations that cut context-switching</a> and shares a <a href="https://x.com/pierceboggan/status/2067644868495860211">personal automation example</a> built in the app.</div>
+      <div class="prompt"><span class="ptext">Every Friday at 9am, research what changed this week on &lt;topic&gt; using the available project sources, then draft a one-page brief with citations, open questions, and recommended follow-ups.</span><button class="copy-btn">Copy</button></div>
+      <div class="prompt"><span class="ptext">Every Monday at 8am, summarize last week's merged PRs and open issues for this repo, grouped by customer impact, risk, and follow-up needed.</span><button class="copy-btn">Copy</button></div>
+      <div class="prompt"><span class="ptext">On demand, generate release notes from merged PRs since the last tag, then flag anything that needs human review before publishing.</span><button class="copy-btn">Copy</button></div>
+      <div class="prompt"><span class="ptext">When a new issue matching label:customer-impact is opened, triage it, identify likely owner areas, propose labels, and draft a first response without posting it.</span><button class="copy-btn">Copy</button></div>
+      <div class="note warn" style="margin-bottom:0"><strong>Connector note:</strong> Slack / Microsoft 365 may work in normal chat before they work reliably inside Automations. If a connector-backed automation fails, run that prompt in chat for now.</div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">6</span> PR follow-through and verification loops</h2>
+      <p>Use agents for mechanical review follow-up, but keep humans in control of architecture, product tradeoffs, and final approval. For risky work, use a maker/checker pattern.</p>
+      <p class="docs-line"><strong>Docs:</strong> <a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions#using-the-rubber-duck-agent">Using the rubber duck agent</a> · <a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions">Working with agent sessions</a></p>
+      <div class="note key"><strong>Builder signal:</strong> James Montemagno calls <a href="https://x.com/JamesMontemagno/status/2068939910233694439">Agent Merge</a> a game changer for creating the PR, running actions, running code review, and preparing it for merge. Pierce Boggan says <a href="https://x.com/pierceboggan/status/2069097176811418046">Agent Merge makes it easier to land PRs</a> from coding agent sessions.</div>
+      <div class="prompt"><span class="ptext">Address the review comments on this PR, investigate any failing checks, and summarize what changed before I approve anything.</span><button class="copy-btn">Copy</button></div>
+      <div class="prompt"><span class="ptext">Act as an independent verifier for this branch. Do not edit files. Review the plan, diff, tests, security implications, rollback path, and missing edge cases. Return only high-confidence issues.</span><button class="copy-btn">Copy</button></div>
+      <div class="prompt"><span class="ptext">Create a merge-readiness checklist for this PR: CI status, test coverage, docs, migrations, rollout risk, observability, and rollback plan.</span><button class="copy-btn">Copy</button></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num g">7</span> Write your first skill</h2>
+      <p>A <strong>skill</strong> teaches Copilot a repeatable workflow: the goal, inputs, steps, examples, guardrails, and success criteria. Good first skills are team workflows you already repeat by hand.</p>
+      <p class="docs-line"><strong>Docs:</strong> <a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/customize-github-copilot-app#adding-agent-skills">Adding agent skills</a> · <a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/customize-github-copilot-app">Customizing the app</a></p>
+      <div class="note key"><strong>Builder signal:</strong> GitHub’s Evan interview pairs <a href="https://x.com/github/status/2069881807999479943">custom skills with automations</a> as reusable workflow building blocks. The GitHub Copilot App release notes mention <a href="https://x.com/GHCopilotLog/status/2072738366232158279">design skill improvements and <code>/init</code></a> for repository instructions files that help standardize team workflows.</div>
+      <div class="prompt"><span class="ptext">Help me write my first Copilot skill for &lt;workflow&gt;. Ask me for the goal, inputs, steps, examples, guardrails, and success criteria, then produce a reusable skill I can share with my team.</span><button class="copy-btn">Copy</button></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Good first skill</th><th>Why it works</th></tr></thead>
+        <tbody>
+          <tr><td>Weekly status update</td><td>Stable inputs, repeatable structure, easy to review.</td></tr>
+          <tr><td>Launch brief</td><td>Clear template, known stakeholders, consistent decision points.</td></tr>
+          <tr><td>Customer feedback summary</td><td>Repeatable grouping by theme, quote, severity, and next action.</td></tr>
+          <tr><td>QBR prep</td><td>Reusable sections: wins, risks, metrics, asks, open questions.</td></tr>
+          <tr><td>Document review checklist</td><td>Strong guardrails and an obvious definition of done.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num p">8</span> Habits that make advanced usage reliable</h2>
+      <div class="note key"><strong>Builder signal:</strong> The strongest habit theme across the builder posts is intentional architecture: isolated worktrees, <code>/orchestrate</code>, and deliberate cloud-vs-local decisions from <a href="https://x.com/_Evan_Boyle/status/2067282259695272344">Evan Boyle</a>; visible canvases and Agent Merge loops from <a href="https://x.com/JamesMontemagno/status/2073574260900270236">James Montemagno</a> and <a href="https://x.com/pierceboggan/status/2069097176811418046">Pierce Boggan</a>; and the .NET framing of sessions, canvases, and <a href="https://x.com/dotnet/status/2073029479035703415">automations that make AI work like a teammate, not a textbox</a>.</div>
+      <ul>
+        <li><strong>Scope before launch.</strong> Define the goal, risks, constraints, and done criteria before starting a long-running session.</li>
+        <li><strong>Match autonomy to risk.</strong> Use plan-first for high-stakes work; use more autonomy only for narrow, reversible, well-tested tasks.</li>
+        <li><strong>Design fleets intentionally.</strong> Give each agent a unique job; avoid five agents all solving the same problem unless you are deliberately comparing approaches.</li>
+        <li><strong>Use cloud sessions selectively.</strong> Great for resumable, compute-heavy, or cross-device work; be mindful of org policy, billing, secrets, and tool access.</li>
+        <li><strong>Route models deliberately.</strong> Use cheaper / faster models for routine edits; spend reasoning budget on design, debugging, migrations, and review.</li>
+        <li><strong>Prefer visible artifacts.</strong> Ask for a plan, canvas, checklist, or diff summary so humans can steer quickly.</li>
+        <li><strong>Separate maker and checker.</strong> A second review session is cheap insurance for production-oriented work.</li>
+        <li><strong>Standardize what repeats.</strong> If the same prompt, checklist, or review policy keeps coming up, turn it into a skill, automation, shared instruction, or extension.</li>
+        <li><strong>Stay connected.</strong> Share wins and reusable prompts in <a href="https://github.slack.com/archives/C0B9WPN7K7E">#dmo-ai-first</a>.</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<button class="print-btn" onclick="window.print()">🖨️ Print / Save PDF</button>
+
+<script>
+(function () {
+  document.querySelectorAll('.copy-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.parentElement.querySelector('.ptext').textContent.trim();
+      navigator.clipboard.writeText(text).then(function () {
+        var old = btn.textContent; btn.textContent = 'Copied ✓'; btn.classList.add('done');
+        setTimeout(function () { btn.textContent = old; btn.classList.remove('done'); }, 1400);
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

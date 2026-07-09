@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GitHub Copilot App — Quick Start (macOS)</title>
+<style>
+  :root {
+    --bg: #ffffff; --bg-soft: #f6f8fa; --bg-sunken: #eaeef2;
+    --border: #d1d9e0; --border-muted: #d8dee4;
+    --text: #1f2328; --text-muted: #59636e;
+    --accent: #0969da; --accent-soft: #ddf4ff; --accent-border: #b6e3ff;
+    --green: #1a7f37; --green-emphasis: #1f883d; --green-soft: #dafbe1;
+    --amber: #9a6700; --amber-emphasis: #bf8700; --amber-soft: #fff8c5;
+    --red: #cf222e; --red-soft: #ffebe9;
+    --header: #1f2328;
+    --radius: 6px; --shadow: 0 1px 3px rgba(31,35,40,.06);
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: var(--font); color: var(--text); background: var(--bg-soft); line-height: 1.55; font-size: 15.5px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .page { max-width: 940px; margin: 0 auto; padding: 0 20px 50px; }
+  .tabs { display:flex; gap:8px; margin:0 0 16px; background: var(--bg); border:1px solid var(--border); border-radius:999px; padding:5px; box-shadow: var(--shadow); }
+  .tabs a { flex:1; text-align:center; border-radius:999px; padding:8px 12px; font-size:13.5px; font-weight:650; color: var(--text-muted); }
+  .tabs a:hover { background: var(--bg-soft); color: var(--text); text-decoration:none; }
+  .tabs a.active { background: var(--accent); color:#fff; }
+
+  header.hero { background: var(--header); color:#fff; border-radius:0 0 12px 12px; padding: 26px 30px 24px; margin-bottom: 22px; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .brand { display:flex; align-items:center; gap:9px; margin-bottom:14px; font-weight:600; font-size:14px; }
+  .brand svg { flex:none; }
+  .brand .divider { width:1px; height:18px; background:rgba(255,255,255,.25); }
+  .brand .product { color:rgba(255,255,255,.72); font-weight:400; }
+  header.hero .eyebrow { display:inline-block; background: rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.22); padding:3px 11px; border-radius:999px; font-size:12.5px; font-weight:600; margin-bottom:12px; }
+  header.hero h1 { margin:0 0 6px; font-size:27px; }
+  header.hero p { margin:0; font-size:16px; color: rgba(255,255,255,.94); }
+
+  .grid { display: flex; flex-direction: column; gap: 16px; }
+  .col-full { width: 100%; }
+  .card { background: var(--bg); border:1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); }
+  .card h2 { margin:0 0 12px; font-size:17px; display:flex; align-items:center; gap:9px; }
+  .num { width:26px; height:26px; border-radius:50%; background: var(--accent); color:#fff; display:inline-grid; place-items:center; font-weight:700; font-size:14px; flex:none; }
+  .card h2 .num.g { background: var(--green); }
+  ul, ol { padding-left: 20px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  code { font-family: var(--mono); font-size:85%; background: rgba(129,139,152,.15); padding:.2em .4em; border-radius:6px; border:none; }
+  strong { font-weight: 650; }
+  p { margin: 8px 0; }
+
+  .note { border-radius: var(--radius); padding: 11px 13px 11px 40px; margin: 12px 0; position: relative; font-size:14px; border:1px solid var(--border-muted); border-left-width:3px; background: var(--bg); }
+  .note::before { position:absolute; left:13px; top:10px; font-size:15px; }
+  .note strong { font-weight:600; }
+  .note.tip { background: var(--accent-soft); border-left-color: var(--accent); } .note.tip::before { content:"💡"; }
+  .note.warn { background: var(--amber-soft); border-left-color: var(--amber-emphasis); } .note.warn::before { content:"⚠️"; }
+  .note.good { background: var(--green-soft); border-left-color: var(--green-emphasis); } .note.good::before { content:"✅"; }
+
+  .prompt { display:flex; align-items:flex-start; gap:9px; background: var(--bg-sunken); border:1px solid var(--border); border-radius:7px; padding:9px 10px; margin:7px 0; }
+  .prompt .ptext { flex:1; font-size:13.5px; }
+  .prompt.cmd .ptext { font-family: var(--mono); font-size:12.5px; }
+  .copy-btn { flex:none; background: var(--bg); border:1px solid var(--border); border-radius:6px; padding:3px 9px; font-size:12px; font-weight:600; cursor:pointer; color: var(--text-muted); font-family: var(--font); transition: all .15s; }
+  .copy-btn:hover { background: var(--accent); color:#fff; border-color: var(--accent); }
+  .copy-btn.done { background: var(--green); color:#fff; border-color: var(--green); }
+
+  .chooser .btns { display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 4px; }
+  .chooser button.pick { background: var(--bg); border:1.5px solid var(--accent); color: var(--accent); padding:7px 13px; border-radius:7px; font-weight:600; font-size:13.5px; cursor:pointer; font-family: var(--font); transition: all .15s; }
+  .chooser button.pick:hover, .chooser button.pick.sel { background: var(--accent); color:#fff; }
+  .chooser .result { display:none; margin-top:11px; padding:11px 13px; background: var(--bg-soft); border:1px solid var(--border); border-radius:7px; font-size:13.5px; }
+  .chooser .result.show { display:block; }
+  .chooser .result code { background: var(--green-soft); border-color:#b7e4c0; color: var(--green); font-weight:600; }
+
+  .checklist .progress-wrap { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .progress-bar { flex:1; height:9px; background: var(--bg-sunken); border-radius:999px; overflow:hidden; border:1px solid var(--border-muted); }
+  .progress-fill { height:100%; width:0%; background: linear-gradient(90deg, var(--green), #2da44e); transition: width .35s ease; }
+  .progress-label { font-size:12.5px; font-weight:600; color: var(--text-muted); white-space:nowrap; }
+  .check-item { display:flex; align-items:flex-start; gap:10px; padding:9px 11px; border:1px solid var(--border-muted); border-radius:7px; margin:6px 0; cursor:pointer; }
+  .check-item:hover { background: var(--bg-soft); }
+  .check-item input { margin-top:2px; width:16px; height:16px; accent-color: var(--green); cursor:pointer; flex:none; }
+  .check-item.done label { text-decoration: line-through; color: var(--text-muted); }
+  .check-item label { cursor:pointer; font-size:14px; }
+  .reset-btn { background:none; border:none; color: var(--accent); font-size:12px; cursor:pointer; font-family: var(--font); }
+  .reset-btn:hover { text-decoration: underline; }
+
+  .terms { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; }
+  .term { background: var(--bg-soft); border:1px solid var(--border-muted); border-radius:8px; padding:11px 13px; }
+  .term b { display:block; font-size:14px; margin-bottom:2px; }
+  .term span { font-size:13px; color: var(--text-muted); }
+
+  .connect-diagram { display:flex; align-items:stretch; justify-content:center; flex-wrap:wrap; margin:14px 0 18px; }
+  .connect-diagram .node { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; background: var(--bg); border:1px solid var(--border); border-radius:11px; padding:12px 16px; min-width:112px; box-shadow: var(--shadow); }
+  .connect-diagram .node svg { width:32px; height:32px; }
+  .connect-diagram .node .lbl { font-weight:600; font-size:13px; }
+  .connect-diagram .node .sub { font-size:10.5px; color: var(--text-muted); text-align:center; line-height:1.3; }
+  .connect-diagram .node.hub { background: var(--header); color:#fff; border-color: var(--header); }
+  .connect-diagram .node.hub .sub { color: rgba(255,255,255,.72); }
+  .connect-diagram .wire { flex:1; min-width:22px; max-width:60px; align-self:center; height:3px; border-radius:3px; background: repeating-linear-gradient(90deg, var(--border-muted) 0 6px, transparent 6px 12px); }
+  @media (max-width:520px){ .connect-diagram { flex-direction:column; } .connect-diagram .wire { width:3px; height:22px; min-width:0; background: repeating-linear-gradient(180deg, var(--border-muted) 0 6px, transparent 6px 12px); } }
+  .brand-ico { vertical-align:-3px; margin-right:6px; }
+
+  .print-btn { position: fixed; bottom:20px; right:20px; background: var(--green-emphasis); color:#fff; border:1px solid rgba(31,35,40,.15); border-radius:var(--radius); padding:10px 16px; font-weight:600; font-size:13.5px; cursor:pointer; box-shadow:0 6px 18px rgba(31,35,40,.18); font-family: var(--font); }
+  .print-btn:hover { background: var(--green); }
+
+  @media (max-width: 720px){ .grid, .terms { grid-template-columns: 1fr; } }
+  @media print {
+    body { background:#fff; font-size: 12px; }
+    header.hero { background:#1f2328 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; border-radius:0; padding:18px 22px; }
+    .print-btn { display:none; }
+    .card { box-shadow:none; break-inside: avoid; }
+    .page { padding-bottom: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="page" style="padding-bottom:0">
+    <div class="brand">
+      <svg height="26" width="26" viewBox="0 0 16 16" fill="#fff" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.075-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>
+      <span>GitHub</span><span class="divider"></span><span class="product">Copilot</span>
+    </div>
+    <span class="eyebrow">⚡ Quick Start · macOS</span>
+    <h1>GitHub Copilot App — Get running in ~10 minutes</h1>
+    <p>Install, sign in, and run your first task. No coding required.</p>
+  </div>
+</header>
+
+<div class="page">
+
+  <nav class="tabs" aria-label="Office hours handouts">
+    <a class="active" href="quick-start-handout.html">Quick start</a>
+    <a href="power-user-handout.html">Power user</a>
+  </nav>
+
+  <div class="note good col-full" style="margin-top:0"><strong>Before you start:</strong>&nbsp; You need a <strong>GitHub account with Copilot enabled</strong> (if you use Copilot in your browser or editor today, you’re set) and a <strong>Mac</strong>. You do <strong>not</strong> need to install Git, Node, npm, or anything else — the app includes everything.</div>
+
+  <div class="grid">
+
+    <div class="card">
+      <h2><span class="num">1</span> Download</h2>
+      <p>Open the <a href="https://github.com/features/ai/github-app">GitHub Copilot app download page</a> and click the download button.</p>
+      <div class="note tip" style="margin-bottom:0">No chip check needed — the page detects the right build for your machine.</div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">2</span> Install</h2>
+      <ol>
+        <li>Double-click the downloaded <code>.dmg</code>.</li>
+        <li><strong>Drag “GitHub Copilot” onto the Applications folder.</strong></li>
+        <li>Eject the disk image and (optionally) delete the <code>.dmg</code>.</li>
+      </ol>
+      <p style="color:var(--text-muted);font-size:13.5px;margin-bottom:0">No installer wizard, no Terminal, no “package install.”</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">3</span> Open &amp; sign in</h2>
+      <ol>
+        <li>Open <strong>Applications → GitHub Copilot</strong>. If macOS asks, click <strong>Open</strong>.</li>
+        <li>Sign in with <strong>GitHub</strong> in the browser window — it returns you to the app automatically.</li>
+      </ol>
+      <div class="note tip" style="margin-bottom:0">If the browser hand-off doesn’t work, the app shows a short <strong>device code</strong> to type into GitHub — that’s normal.</div>
+    </div>
+
+    <div class="card col-full">
+      <h2><span class="num">4</span> Run your first task</h2>
+      <ol>
+        <li>Click <strong>Add project → open a folder</strong> and pick a <strong>safe folder of files</strong> (tip: duplicate one first).</li>
+        <li>Start a <strong>new session</strong> and paste a request:</li>
+      </ol>
+      <div class="prompt"><span class="ptext">Summarize what’s in this folder and describe each file in one line.</span><button class="copy-btn">Copy</button></div>
+      <div class="prompt"><span class="ptext">Draft a one-page executive summary of &lt;document&gt;.</span><button class="copy-btn">Copy</button></div>
+      <div class="prompt"><span class="ptext">Rename these files to a consistent YYYY-MM-DD-topic format.</span><button class="copy-btn">Copy</button></div>
+      <p style="margin-bottom:0">Then review what it proposes in the <strong>Changes view</strong> and <strong>approve or discard</strong>.</p>
+    </div>
+
+    <div class="card">
+      <h2>🔤 3 terms worth knowing</h2>
+      <div class="terms">
+        <div class="term"><b>Project</b><span>The folder (or repo) you point the app at.</span></div>
+        <div class="term"><b>Session</b><span>One conversation with Copilot where the work happens.</span></div>
+        <div class="term"><b>Changes view</b><span>Shows exactly what Copilot changed — you approve every edit.</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>✨ Good to know</h2>
+      <ul style="margin-bottom:0">
+        <li><strong>It updates itself</strong> — no need to re-download for new features.</li>
+        <li><strong>Copilot proposes, you approve</strong> — nothing changes, and nothing is pushed to GitHub, unless you ask.</li>
+        <li><strong>You don’t need a repository</strong> — a plain folder of documents works great.</li>
+        <li><strong>Save repeat work as an Automation</strong> — run a task on a schedule (e.g., a weekly summary).</li>
+        <li><strong>Connect your tools</strong> — let Copilot search and summarize <strong>Slack</strong> and <strong>Microsoft 365</strong> (email, meetings, Teams, docs) for you (see the card below).</li>
+        <li><strong>Power users:</strong> write a reusable skill for a workflow your team repeats.</li>
+      </ul>
+    </div>
+
+    <div class="card col-full">
+      <h2>🔌 Connect your tools <span style="font-size:12px;font-weight:600;background:var(--accent-soft);color:var(--accent);padding:2px 9px;border-radius:999px;margin-left:4px">popular</span></h2>
+      <p style="margin-top:0">Copilot can plug into the tools you already use and <strong>search &amp; summarize</strong> them for you — just by asking. Both connectors are <strong>read-only</strong> and only see what <em>you</em> could already see. Copilot <strong>drafts, you send</strong>.</p>
+
+      <div class="connect-diagram" role="img" aria-label="Copilot connects to Slack and Microsoft 365">
+        <div class="node slack">
+          <svg viewBox="0 0 122.8 122.8" aria-hidden="true"><path d="M25.8 77.6c0 7.1-5.8 12.9-12.9 12.9S0 84.7 0 77.6s5.8-12.9 12.9-12.9h12.9v12.9z" fill="#E01E5A"/><path d="M32.3 77.6c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9v32.3c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V77.6z" fill="#E01E5A"/><path d="M45.2 25.8c-7.1 0-12.9-5.8-12.9-12.9S38.1 0 45.2 0s12.9 5.8 12.9 12.9v12.9H45.2z" fill="#36C5F0"/><path d="M45.2 32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H12.9C5.8 58.1 0 52.3 0 45.2s5.8-12.9 12.9-12.9h32.3z" fill="#36C5F0"/><path d="M97 45.2c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9-5.8 12.9-12.9 12.9H97V45.2z" fill="#2EB67D"/><path d="M90.5 45.2c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V12.9C64.7 5.8 70.5 0 77.6 0s12.9 5.8 12.9 12.9v32.3z" fill="#2EB67D"/><path d="M77.6 97c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9-12.9-5.8-12.9-12.9V97h12.9z" fill="#ECB22E"/><path d="M77.6 90.5c-7.1 0-12.9-5.8-12.9-12.9s5.8-12.9 12.9-12.9h32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H77.6z" fill="#ECB22E"/></svg>
+          <span class="lbl">Slack</span><span class="sub">messages<br>channels</span>
+        </div>
+        <div class="wire"></div>
+        <div class="node hub">
+          <svg viewBox="0 0 16 16" fill="#fff" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.075-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>
+          <span class="lbl">Copilot</span><span class="sub">just ask</span>
+        </div>
+        <div class="wire"></div>
+        <div class="node m365">
+          <svg viewBox="0 0 23 23" aria-hidden="true"><path fill="#f25022" d="M1 1h10v10H1z"/><path fill="#7fba00" d="M12 1h10v10H12z"/><path fill="#00a4ef" d="M1 12h10v10H1z"/><path fill="#ffb900" d="M12 12h10v10H12z"/></svg>
+          <span class="lbl">Microsoft 365</span><span class="sub">email · meetings<br>Teams · docs</span>
+        </div>
+      </div>
+
+      <h3 style="font-size:15px;margin:18px 0 6px;padding-top:12px;border-top:1px solid var(--border);color:var(--accent)"><svg class="brand-ico" height="16" width="16" viewBox="0 0 122.8 122.8" aria-hidden="true"><path d="M25.8 77.6c0 7.1-5.8 12.9-12.9 12.9S0 84.7 0 77.6s5.8-12.9 12.9-12.9h12.9v12.9z" fill="#E01E5A"/><path d="M32.3 77.6c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9v32.3c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V77.6z" fill="#E01E5A"/><path d="M45.2 25.8c-7.1 0-12.9-5.8-12.9-12.9S38.1 0 45.2 0s12.9 5.8 12.9 12.9v12.9H45.2z" fill="#36C5F0"/><path d="M45.2 32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H12.9C5.8 58.1 0 52.3 0 45.2s5.8-12.9 12.9-12.9h32.3z" fill="#36C5F0"/><path d="M97 45.2c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9-5.8 12.9-12.9 12.9H97V45.2z" fill="#2EB67D"/><path d="M90.5 45.2c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V12.9C64.7 5.8 70.5 0 77.6 0s12.9 5.8 12.9 12.9v32.3z" fill="#2EB67D"/><path d="M77.6 97c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9-12.9-5.8-12.9-12.9V97h12.9z" fill="#ECB22E"/><path d="M77.6 90.5c-7.1 0-12.9-5.8-12.9-12.9s5.8-12.9 12.9-12.9h32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H77.6z" fill="#ECB22E"/></svg>Slack — our Slack workspace</h3>
+      <p style="margin:6px 0"><strong>Set it up once:</strong> follow the official guide (GitHub sign-in required) →
+        <a href="https://silver-adventure-2ql4l3q.pages.github.io/connect/slack/">Connect Slack</a>. Then, on your first Slack question, approve access once in the browser.</p>
+      <p style="margin:6px 0">For examples and reusable DMO prompts, join <a href="https://github.slack.com/archives/C0B9WPN7K7E">#dmo-ai-first</a>.</p>
+      <p style="margin:10px 0 6px"><strong>Then just ask:</strong></p>
+      <div class="prompt"><span class="ptext">Catch me up on #my-team since Monday — lead with anything that needs my response.</span><button class="copy-btn">Copy</button></div>
+      <div class="prompt"><span class="ptext">What did we decide about the launch date in #project-x?</span><button class="copy-btn">Copy</button></div>
+
+      <h3 style="font-size:15px;margin:18px 0 6px;padding-top:12px;border-top:1px solid var(--border);color:var(--accent)"><svg class="brand-ico" height="15" width="15" viewBox="0 0 23 23" aria-hidden="true"><path fill="#f25022" d="M1 1h10v10H1z"/><path fill="#7fba00" d="M12 1h10v10H12z"/><path fill="#00a4ef" d="M1 12h10v10H1z"/><path fill="#ffb900" d="M12 12h10v10H12z"/></svg>Microsoft 365 (WorkIQ) — email, meetings, Teams &amp; docs</h3>
+      <p style="margin:6px 0"><strong>Set it up once:</strong> follow the official guide (sign-in required) →
+        <a href="https://silver-adventure-2ql4l3q.pages.github.io/connect/microsoft-365/">Connect Microsoft 365</a>.</p>
+      <p style="margin:10px 0 6px"><strong>Then just ask:</strong></p>
+      <div class="prompt"><span class="ptext">Summarize my unread email this week and flag anything that needs a reply.</span><button class="copy-btn">Copy</button></div>
+      <div class="prompt"><span class="ptext">What should I know before my next meeting? Pull the related email and files.</span><button class="copy-btn">Copy</button></div>
+      <div class="prompt"><span class="ptext">Give me the decisions and action items from yesterday’s project sync.</span><button class="copy-btn">Copy</button></div>
+
+      <div class="note tip">
+        <strong>Tips:</strong>
+        <ul style="margin:4px 0 0">
+          <li><strong>Name the source</strong> (a channel like <code>#engineering</code>, or “my inbox,” “yesterday’s meeting”) and a <strong>time frame</strong> — you’ll get sharper answers.</li>
+          <li><strong>Ask for citations</strong> — it links back to the message, email, or file so you can verify.</li>
+          <li><strong>It drafts, you send.</strong> Ask it to “draft a reply,” then post or send it yourself.</li>
+          <li>The first query opens a <strong>one-time approval</strong> in your browser — that’s expected.</li>
+        </ul>
+      </div>
+      <div class="note warn" style="margin-bottom:0">Each connector respects <strong>your existing access</strong> (nothing new), and <strong>asks first</strong> before reading DMs, email, or anything that looks legal / HR / security-sensitive.</div>
+    </div>
+
+    <div class="card col-full">
+      <h2>⚡ Set up your first automation</h2>
+      <p style="margin-top:0"><strong>What's an automation?</strong> A <strong>saved task that runs on its own</strong> — on a schedule (say, every Monday at 8am) or when you trigger it. Think of it like an <strong>email rule</strong>, except instead of just filing a message it actually <em>does the work</em>: gathers the info, writes the draft, and hands you the result to review.</p>
+      <p style="margin:10px 0 6px">You describe the task once in plain English, pick when it should run, and Copilot takes it from there. Great for anything you repeat — a weekly summary, a Monday-morning catch-up, a recurring report.</p>
+      <p style="margin:14px 0 6px"><strong>Try setting one up — just ask:</strong></p>
+      <div class="prompt"><span class="ptext">Every Monday at 8am, summarize what changed in this project folder last week and draft my status update.</span><button class="copy-btn">Copy</button></div>
+      <div class="prompt"><span class="ptext">Every Friday at 9am, research what changed this week on &lt;topic&gt; and draft a one-page brief with citations, open questions, and recommended follow-ups.</span><button class="copy-btn">Copy</button></div>
+      <div class="note tip" style="margin-bottom:0"><strong>You're still in control:</strong> an automation <strong>drafts</strong> the work and shows it to you — it doesn't send, post, or change anything unless you approve it.</div>
+      <div class="note warn" style="margin-bottom:0"><strong>Connector note:</strong> Slack / Microsoft 365 may work in normal chat before they work reliably inside Automations. If a connector-backed automation fails, run that prompt in chat for now.</div>
+    </div>
+
+    <div class="card col-full">
+      <h2>🚀 Power users start here</h2>
+      <p style="margin-top:0">Once you have one useful session working, try the advanced patterns: parallel sessions, plan-first issue work, canvases, automations, and reusable team skills.</p>
+      <ul>
+        <li><strong>Parallel work:</strong> run separate sessions for a bug, a feature, and cleanup work; review each diff separately.</li>
+        <li><strong>Canvases:</strong> create a visible board, launch plan, checklist, or dashboard instead of relying only on chat history.</li>
+        <li><strong>Skills:</strong> teach Copilot a repeatable workflow your team runs often.</li>
+      </ul>
+      <div class="prompt"><span class="ptext">Help me write my first Copilot skill for &lt;workflow&gt;. Ask me for the goal, inputs, steps, examples, guardrails, and success criteria, then produce a reusable skill I can share with my team.</span><button class="copy-btn">Copy</button></div>
+      <div class="prompt"><span class="ptext">Create an agentic kanban canvas for this project with backlog, in progress, blocked, ready for review, and done.</span><button class="copy-btn">Copy</button></div>
+      <p style="margin-bottom:0;color:var(--text-muted);font-size:13.5px">Open the <a href="power-user-handout.html">Power User handout</a> for the full advanced-use-case menu, prompt library, habits, and links to the GitHub Docs for <a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions">agent sessions</a>, <a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/working-with-canvas-extensions">canvases</a>, and <a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/using-automations">automations</a>.</p>
+    </div>
+
+    <div class="card col-full">
+      <h2>🆘 Stuck?</h2>
+      <ul style="margin-bottom:0">
+        <li><strong>“Damaged / can’t open”</strong> → you likely grabbed the wrong file; re-download the official <code>.dmg</code> for your Mac type.</li>
+        <li><strong>Sign-in hangs on work Wi-Fi</strong> → a corporate VPN or proxy may be blocking it; try off-VPN if allowed, or flag it at office hours.</li>
+        <li><strong>Auth error won’t clear</strong> → fully quit and reopen the app; if it persists, remove your account and re-add it.</li>
+        <li><strong>“No access to Copilot”</strong> → that’s a licensing/seat issue — contact whoever manages Copilot seats on your team.</li>
+        <li>Bring it to <strong>office hours</strong> — we’ll get you unblocked.</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<button class="print-btn" onclick="window.print()">🖨️ Print / Save PDF</button>
+
+<script>
+(function () {
+  document.querySelectorAll('.copy-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.parentElement.querySelector('.ptext').textContent.trim();
+      navigator.clipboard.writeText(text).then(function () {
+        var old = btn.textContent; btn.textContent = 'Copied ✓'; btn.classList.add('done');
+        setTimeout(function () { btn.textContent = old; btn.classList.remove('done'); }, 1400);
+      });
+    });
+  });
+
+  document.querySelectorAll('.checklist').forEach(function (list) {
+    var key = 'ohqs-' + (list.dataset.storage || 'default');
+    var boxes = list.querySelectorAll('input[type=checkbox]');
+    var fill = list.querySelector('.progress-fill');
+    var label = list.querySelector('.progress-label');
+    var saved = {}; try { saved = JSON.parse(localStorage.getItem(key) || '{}'); } catch (e) {}
+    function render() {
+      var done = 0;
+      boxes.forEach(function (b) { if (b.checked) { done++; b.closest('.check-item').classList.add('done'); } else b.closest('.check-item').classList.remove('done'); });
+      fill.style.width = (boxes.length ? Math.round(done / boxes.length * 100) : 0) + '%';
+      label.textContent = done + ' / ' + boxes.length + ' done';
+    }
+    boxes.forEach(function (b) {
+      if (saved[b.id]) b.checked = true;
+      b.addEventListener('change', function () { saved[b.id] = b.checked; localStorage.setItem(key, JSON.stringify(saved)); render(); });
+    });
+    var reset = list.querySelector('.reset-btn');
+    if (reset) reset.addEventListener('click', function () { boxes.forEach(function (b){ b.checked=false; }); saved={}; localStorage.removeItem(key); render(); });
+    render();
+  });
+})();
+</script>
+</body>
+</html>
