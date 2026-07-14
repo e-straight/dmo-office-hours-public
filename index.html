@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:," />
 <title>DMO Office Hours Handouts</title>
 <style>
   body {
@@ -48,21 +49,52 @@
     color: #1f2328;
     margin-bottom: 4px;
   }
+  .group {
+    margin-top: 28px;
+  }
+  .group h2 {
+    margin: 0 0 10px;
+    font-size: 19px;
+  }
+  .group p {
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
 </style>
 </head>
 <body>
 <main>
   <h1>DMO Office Hours Handouts</h1>
-  <p>Static handouts for GitHub Copilot App office hours.</p>
-  <div class="cards">
-    <a class="card" href="quick-start-handout.html">
-      <strong>Quick start handout</strong>
-      First-session guidance, setup tips, and starter prompts.
-    </a>
-    <a class="card" href="power-user-handout.html">
-      <strong>Power user handout</strong>
-      Advanced workflows for agent sessions, orchestration, canvases, automations, model routing, skills, and PR follow-through.
-    </a>
+  <p>Static handouts for GitHub Copilot office hours.</p>
+
+  <div class="group">
+    <h2>GitHub Copilot app</h2>
+    <p>Visual agent workspace guidance for local and cloud sessions.</p>
+    <div class="cards">
+      <a class="card" href="copilot-app-quick-start-handout.html">
+        <strong>App quick start</strong>
+        Installation, first-session guidance, connectors, automations, and starter prompts.
+      </a>
+      <a class="card" href="copilot-app-power-user-handout.html">
+        <strong>App power user</strong>
+        Agent fleets, cloud sessions, canvases, automations, model routing, and skills.
+      </a>
+    </div>
+  </div>
+
+  <div class="group">
+    <h2>GitHub Copilot CLI</h2>
+    <p>Terminal-native workflows for coding, GitHub operations, agents, and long-running work.</p>
+    <div class="cards">
+      <a class="card" href="copilot-cli-quick-start-handout.html">
+        <strong>CLI quick start</strong>
+        Terminal basics, installation, first-session workflow, safety, shortcuts, and starter prompts.
+      </a>
+      <a class="card" href="copilot-cli-power-user-handout.html">
+        <strong>CLI power user</strong>
+        Planning, model routing, fleet, VM/tmux sessions, remote control, Chronicle, plugins, and BYOK.
+      </a>
+    </div>
   </div>
 </main>
 </body>

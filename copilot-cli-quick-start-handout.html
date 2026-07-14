@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:," />
+<title>GitHub Copilot CLI - Quick Start Handout</title>
+<style>
+  :root {
+    --bg: #f6f8fa; --card: #fff; --text: #1f2328; --muted: #59636e;
+    --border: #d1d9e0; --blue: #0969da; --blue-soft: #ddf4ff;
+    --green: #1a7f37; --green-soft: #dafbe1; --amber: #9a6700;
+    --amber-soft: #fff8c5; --purple: #8250df; --purple-soft: #fbefff;
+    --header: #0d1117; --radius: 10px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 var(--font); }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code, kbd { font-family: var(--mono); font-size: 88%; }
+  code { background: #afb8c133; border-radius: 5px; padding: .15em .4em; }
+  kbd { background: #f6f8fa; border: 1px solid #afb8c1; border-bottom-width: 2px; border-radius: 5px; padding: 1px 5px; white-space: nowrap; }
+  .page { max-width: 980px; margin: 0 auto; padding: 0 22px 48px; }
+  .hero { background: var(--header); color: #fff; padding: 28px 0 26px; margin-bottom: 20px; }
+  .brand { display: flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 650; margin-bottom: 13px; }
+  .brand svg { flex: none; }
+  .brand span:last-child { color: #ffffffb8; font-weight: 450; }
+  .eyebrow { display: inline-block; border: 1px solid #ffffff3d; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 650; }
+  h1 { margin: 9px 0 5px; font-size: 30px; line-height: 1.2; }
+  .hero p { margin: 0; color: #ffffffc9; font-size: 16px; }
+  .tabs { display: flex; gap: 7px; background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 5px; margin-bottom: 16px; }
+  .tabs a { flex: 1; text-align: center; border-radius: 999px; padding: 7px 12px; color: var(--muted); font-weight: 650; }
+  .tabs a.active { background: var(--blue); color: #fff; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; box-shadow: 0 1px 3px #1f23280a; }
+  .wide { grid-column: 1 / -1; }
+  .card h2 { display: flex; align-items: center; gap: 9px; margin: 0 0 11px; font-size: 17px; }
+  .card h3 { margin: 15px 0 6px; font-size: 14.5px; }
+  .num { display: grid; place-items: center; width: 26px; height: 26px; flex: none; border-radius: 50%; background: var(--blue); color: #fff; font-size: 13px; }
+  p { margin: 7px 0; }
+  ul, ol { margin: 7px 0; padding-left: 21px; }
+  li { margin: 5px 0; }
+  .note { position: relative; border: 1px solid var(--border); border-left: 4px solid var(--blue); border-radius: 8px; background: var(--blue-soft); padding: 10px 12px; margin: 11px 0; font-size: 13.5px; }
+  .note.good { border-left-color: var(--green); background: var(--green-soft); }
+  .note.warn { border-left-color: var(--amber); background: var(--amber-soft); }
+  .note.power { border-left-color: var(--purple); background: var(--purple-soft); }
+  .prompt { display: flex; gap: 9px; align-items: flex-start; background: #f6f8fa; border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; margin: 7px 0; }
+  .ptext { flex: 1; font-size: 13.5px; }
+  .cmd .ptext { font-family: var(--mono); font-size: 12.5px; overflow-wrap: anywhere; }
+  .copy { border: 1px solid var(--border); border-radius: 6px; background: #fff; color: var(--muted); padding: 3px 8px; font: 600 12px var(--font); cursor: pointer; }
+  .copy:hover, .copy.done { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 12px 0 4px; }
+  .step { position: relative; border: 1px solid var(--border); border-top: 3px solid var(--blue); border-radius: 8px; padding: 36px 10px 10px; background: #fff; }
+  .step::before { content: counter(step); counter-increment: step; position: absolute; left: 10px; top: 8px; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--blue-soft); color: var(--blue); font-size: 11px; font-weight: 750; }
+  .step::after { content: "→"; position: absolute; right: -14px; top: 37px; z-index: 2; color: var(--muted); font-weight: 800; }
+  .step:last-child::after { display: none; }
+  .steps { counter-reset: step; }
+  .step b { display: block; font-size: 13px; margin-bottom: 3px; }
+  .step span { color: var(--muted); font-size: 12px; }
+  .terminal-visual { display: grid; grid-template-columns: 1.35fr .8fr; gap: 12px; margin: 13px 0; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: linear-gradient(135deg, #eef6ff, #fff 55%, #fbefff); }
+  .terminal-window { overflow: hidden; border: 1px solid #30363d; border-radius: 10px; background: #0d1117; box-shadow: 0 8px 24px #1f232826; color: #e6edf3; font-family: var(--mono); }
+  .terminal-bar { display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: #161b22; border-bottom: 1px solid #30363d; color: #8b949e; font-size: 10.5px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #f85149; }
+  .dot.amber { background: #d29922; }
+  .dot.green { background: #3fb950; }
+  .terminal-title { margin-left: 5px; }
+  .terminal-body { min-height: 190px; padding: 14px; font-size: 12.5px; line-height: 1.65; }
+  .terminal-line { display: block; }
+  .terminal-line.dim { color: #8b949e; }
+  .terminal-line.ok { color: #7ee787; }
+  .terminal-line.blue { color: #79c0ff; }
+  .shell-mark { color: #d2a8ff; margin-right: 7px; }
+  .cursor { display: inline-block; width: 7px; height: 14px; margin-left: 4px; background: #e6edf3; vertical-align: -2px; animation: blink 1.1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: .15; } }
+  .terminal-callouts { display: grid; gap: 8px; align-content: center; }
+  .terminal-callout { position: relative; border: 1px solid var(--border); border-radius: 9px; padding: 10px 10px 10px 40px; background: #fff; min-height: 58px; }
+  .terminal-callout::before { position: absolute; left: 10px; top: 11px; display: grid; place-items: center; width: 21px; height: 21px; border-radius: 6px; background: var(--blue-soft); color: var(--blue); font: 750 12px var(--mono); }
+  .terminal-callout:nth-child(1)::before { content: "$"; }
+  .terminal-callout:nth-child(2)::before { content: "@"; background: var(--purple-soft); color: var(--purple); }
+  .terminal-callout:nth-child(3)::before { content: "✓"; background: var(--green-soft); color: var(--green); }
+  .terminal-callout b { display: block; font-size: 12.5px; }
+  .terminal-callout span { display: block; color: var(--muted); font-size: 11.5px; line-height: 1.35; }
+  .mode-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 11px 0; }
+  .mode-card { position: relative; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; padding: 12px; min-height: 112px; background: #fff; }
+  .mode-card::after { content: ""; position: absolute; right: -18px; bottom: -24px; width: 74px; height: 74px; border-radius: 50%; background: var(--blue-soft); }
+  .mode-card.plan::after { background: var(--purple-soft); }
+  .mode-card.auto::after { background: var(--green-soft); }
+  .mode-tag { display: inline-block; border-radius: 999px; padding: 2px 7px; margin-bottom: 7px; background: var(--blue-soft); color: var(--blue); font-size: 10.5px; font-weight: 750; text-transform: uppercase; letter-spacing: .4px; }
+  .mode-card.plan .mode-tag { background: var(--purple-soft); color: var(--purple); }
+  .mode-card.auto .mode-tag { background: var(--green-soft); color: var(--green); }
+  .mode-card b { display: block; position: relative; z-index: 1; margin-bottom: 4px; }
+  .mode-card span:last-child { position: relative; z-index: 1; display: block; color: var(--muted); font-size: 12px; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; margin: 10px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+  th { background: #f6f8fa; }
+  tr:last-child td { border-bottom: 0; }
+  .sources { font-size: 12.5px; color: var(--muted); }
+  .sources a { overflow-wrap: anywhere; }
+  .print { position: fixed; right: 18px; bottom: 18px; border: 0; border-radius: 8px; background: var(--green); color: #fff; padding: 10px 14px; font-weight: 650; cursor: pointer; box-shadow: 0 5px 18px #1f232833; }
+  @media (max-width: 720px) {
+    .grid, .steps, .terminal-visual, .mode-cards { grid-template-columns: 1fr; }
+    .wide { grid-column: auto; }
+    .tabs { border-radius: 10px; flex-direction: column; }
+    .step::after { content: "↓"; right: auto; left: 14px; top: auto; bottom: -17px; }
+    .print { display: none; }
+  }
+  @media print {
+    body { background: #fff; font-size: 11px; }
+    .hero { background: #0d1117 !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; padding: 18px 0; }
+    .page { max-width: none; padding: 0 12px 18px; }
+    .tabs, .print, .copy { display: none; }
+    .grid { gap: 9px; }
+    .card { box-shadow: none; break-inside: avoid; padding: 13px 15px; }
+    .terminal-window { box-shadow: none; }
+    .cursor { animation: none; }
+    a { color: inherit; }
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="page" style="padding-bottom:0">
+    <div class="brand">
+      <svg width="25" height="25" viewBox="0 0 16 16" fill="#fff" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.01 8.01 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82a7.5 7.5 0 0 0-4 0c-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A8 8 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>
+      <span>GitHub</span><span>Copilot CLI</span>
+    </div>
+    <span class="eyebrow">QUICK START</span>
+    <h1>Go from install to a useful result in 10 minutes</h1>
+    <p>A terminal-native coding agent that can inspect, edit, run, test, and explain your project.</p>
+  </div>
+</header>
+
+<main class="page">
+  <nav class="tabs" aria-label="Handouts">
+    <a class="active" href="copilot-cli-quick-start-handout.html">Quick start</a>
+    <a href="copilot-cli-power-user-handout.html">Power user</a>
+  </nav>
+
+  <div class="note good"><strong>Before you start:</strong> use a folder you trust, make sure important work is committed, and remember that Copilot can run commands and change files after you approve the requested tools.</div>
+
+  <div class="grid">
+    <section class="card wide">
+      <h2>What are the terminal and CLI?</h2>
+      <p>A <strong>terminal</strong> is a text-based workspace for running commands. A <strong>CLI</strong>, or command-line interface, is a program you control by typing those commands. GitHub Copilot CLI runs inside your terminal, next to tools such as Git, your test runner, build commands, logs, and project files.</p>
+      <div class="terminal-visual" role="img" aria-label="A terminal window showing Copilot CLI reading project context, proposing a fix, and running tests.">
+        <div class="terminal-window">
+          <div class="terminal-bar"><span class="dot"></span><span class="dot amber"></span><span class="dot green"></span><span class="terminal-title">terminal — sample-project</span></div>
+          <div class="terminal-body">
+            <span class="terminal-line"><span class="shell-mark">$</span>cd sample-project &amp;&amp; copilot</span>
+            <span class="terminal-line dim">GitHub Copilot CLI · trusted directory</span>
+            <span class="terminal-line">&gt; Explain the failing signup test.</span>
+            <span class="terminal-line blue">Reading @src/signup.ts and test output...</span>
+            <span class="terminal-line">Root cause: malformed email values bypass validation.</span>
+            <span class="terminal-line ok">✓ Proposed fix · ✓ Targeted test passed<span class="cursor"></span></span>
+          </div>
+        </div>
+        <div class="terminal-callouts">
+          <div class="terminal-callout"><b>Commands stay close</b><span>Git, builds, logs, tests, and Copilot share one workspace.</span></div>
+          <div class="terminal-callout"><b>Context is explicit</b><span>Mention files, issues, images, and directories directly.</span></div>
+          <div class="terminal-callout"><b>You keep control</b><span>Approve tools, inspect diffs, and verify the result.</span></div>
+        </div>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Choose Copilot CLI when...</th><th>Choose the GitHub Copilot app when...</th></tr></thead>
+        <tbody>
+          <tr><td>You already work in a terminal and want Copilot in the same workflow.</td><td>You prefer a visual workspace for browsing and steering sessions.</td></tr>
+          <tr><td>The task depends on commands, tests, logs, Git, or the current directory.</td><td>You want to manage several visible workstreams without living in a shell.</td></tr>
+          <tr><td>You need a lightweight option for local work, SSH, remote machines, or scripts.</td><td>You want app-specific visual experiences and a more graphical starting point.</td></tr>
+          <tr><td>You want precise control over allowed tools, paths, and URLs.</td><td>You are less comfortable with terminal commands and want more visual guidance.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><strong>It is not an either/or choice:</strong> use the CLI for terminal-native execution and the app for visual orchestration. Pick the surface that best matches the task and how you like to work.</div>
+      <p class="sources">Learn more in <a href="https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-copilot-cli">About GitHub Copilot CLI</a>.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">1</span> Install</h2>
+      <p>Choose the option that fits your machine:</p>
+      <div class="prompt cmd"><span class="ptext">brew install --cask copilot-cli</span><button class="copy">Copy</button></div>
+      <div class="prompt cmd"><span class="ptext">winget install GitHub.Copilot</span><button class="copy">Copy</button></div>
+      <div class="prompt cmd"><span class="ptext">npm install -g @github/copilot</span><button class="copy">Copy</button></div>
+      <p class="sources">The npm option requires Node.js 22 or later. See the <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli">official installation guide</a> for the install script and platform details.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">2</span> Launch and sign in</h2>
+      <ol>
+        <li>Open a terminal in a repository or trusted folder.</li>
+        <li>Run <code>copilot</code>.</li>
+        <li>Follow the browser sign-in flow. Use <code>/login</code> if you need to sign in later.</li>
+      </ol>
+      <div class="prompt cmd"><span class="ptext">cd path/to/your-project &amp;&amp; copilot</span><button class="copy">Copy</button></div>
+      <div class="note"><strong>Live help wins:</strong> Copilot CLI evolves quickly. Run <code>/help</code> for the commands supported by your installed version.</div>
+    </section>
+
+    <section class="card wide">
+      <h2><span class="num">3</span> Run your first task</h2>
+      <div class="steps" aria-label="First task workflow">
+        <div class="step"><b>Explore</b><span>Ask how the project works before changing it.</span></div>
+        <div class="step"><b>Scope</b><span>Name the files, constraints, and success condition.</span></div>
+        <div class="step"><b>Approve</b><span>Review each requested tool or command.</span></div>
+        <div class="step"><b>Verify</b><span>Ask Copilot to run the relevant tests.</span></div>
+      </div>
+      <h3>Good first prompts</h3>
+      <div class="prompt"><span class="ptext">Explain this repository to a new contributor. Identify the main entry points, how to run it, and where tests live. Do not change files.</span><button class="copy">Copy</button></div>
+      <div class="prompt"><span class="ptext">Find one small, low-risk improvement in this project. Explain the proposed change first, wait for my approval, then implement it and run the most relevant test.</span><button class="copy">Copy</button></div>
+      <div class="prompt"><span class="ptext">Investigate why the current test is failing. Identify the root cause before editing, make the smallest safe fix, and rerun the targeted test.</span><button class="copy">Copy</button></div>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">4</span> Give it useful context</h2>
+      <ul>
+        <li><code>@path/to/file</code> mentions a file.</li>
+        <li><code>#123</code> mentions a GitHub issue or pull request.</li>
+        <li><code>! git status</code> runs a shell command yourself.</li>
+        <li>Drag, paste, or mention an image for UI work.</li>
+      </ul>
+      <div class="prompt"><span class="ptext">Using @src/auth.ts and #123, explain the bug, propose the smallest fix, and list the tests that should prove it works.</span><button class="copy">Copy</button></div>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">5</span> Use the right mode</h2>
+      <div class="mode-cards" aria-label="Copilot CLI modes">
+        <div class="mode-card"><span class="mode-tag">Steer</span><b>Standard</b><span>Explore, ask questions, debug, and make small interactive changes.</span></div>
+        <div class="mode-card plan"><span class="mode-tag">Align</span><b>Plan</b><span>Design multi-file features and refactors before any code is written.</span></div>
+        <div class="mode-card auto"><span class="mode-tag">Execute</span><b>Autopilot</b><span>Run a bounded, reversible task with reliable checks and less supervision.</span></div>
+      </div>
+      <p>Press <kbd>Shift</kbd>+<kbd>Tab</kbd> to switch modes. Plan mode waits for approval before implementation.</p>
+    </section>
+
+    <section class="card wide">
+      <h2><span class="num">6</span> Prompt with a definition of done</h2>
+      <p>A strong task usually has four parts:</p>
+      <div class="steps">
+        <div class="step"><b>Goal</b><span>What outcome do you need?</span></div>
+        <div class="step"><b>Context</b><span>Which files, issue, error, or behavior matters?</span></div>
+        <div class="step"><b>Constraints</b><span>What must stay unchanged? What risks matter?</span></div>
+        <div class="step"><b>Done</b><span>Which tests, checks, or output prove success?</span></div>
+      </div>
+      <div class="prompt"><span class="ptext">Add validation to the signup endpoint in @src/routes/signup.ts. Preserve the existing response shape, reuse the project's validation helpers, add tests for empty and malformed email values, run the targeted test suite, and summarize the diff.</span><button class="copy">Copy</button></div>
+    </section>
+
+    <section class="card">
+      <h2>Safety essentials</h2>
+      <ul>
+        <li>Read permission prompts; do not reflexively choose "always allow."</li>
+        <li>Review diffs and command output before committing or pushing.</li>
+        <li>Never paste or commit secrets, tokens, or private keys.</li>
+        <li>Use <code>/reset-allowed-tools</code> to clear session approvals.</li>
+        <li>Use <code>/diff</code> to inspect current changes.</li>
+      </ul>
+      <div class="note warn"><strong>High-risk actions:</strong> slow down for installs, migrations, deletions, force operations, deployments, and commands that access credentials or production systems.</div>
+    </section>
+
+    <section class="card">
+      <h2>Shortcut card</h2>
+      <div class="table-wrap"><table>
+        <tbody>
+          <tr><td><kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Switch mode</td></tr>
+          <tr><td><kbd>Shift</kbd>+<kbd>Enter</kbd></td><td>Insert a newline</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>G</kbd></td><td>Edit the prompt in <code>$EDITOR</code></td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>R</kbd></td><td>Search prompt history</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>T</kbd></td><td>Toggle reasoning display</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>C</kbd></td><td>Cancel; press twice to exit</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="card wide">
+      <h2>When you are stuck</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Problem</th><th>Try this</th></tr></thead>
+        <tbody>
+          <tr><td>Copilot is heading the wrong way</td><td>Cancel, state what is wrong, narrow the task, and ask it to explain before editing.</td></tr>
+          <tr><td>Too much unrelated context</td><td>Use <code>/new</code> or <code>/clear</code> between unrelated tasks.</td></tr>
+          <tr><td>Unsure what changed</td><td>Run <code>/diff</code>, then ask for a file-by-file summary and remaining risks.</td></tr>
+          <tr><td>Need a stronger plan</td><td>Use <code>/plan</code>, review the checklist, and edit it before implementation.</td></tr>
+          <tr><td>Need command details</td><td>Use <code>/help</code>, <code>copilot -h</code>, or <code>copilot help TOPIC</code>.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note power"><strong>Next:</strong> open the <a href="copilot-cli-power-user-handout.html">Power User handout</a> for fleet, delegation, custom instructions, MCP, skills, multi-repo work, permissions, and review loops.</div>
+    </section>
+
+    <section class="card wide sources">
+      <h2>Official sources</h2>
+      <p><a href="https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-copilot-cli">About Copilot CLI</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli">Install Copilot CLI</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/overview">Use Copilot CLI</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices">Best practices</a> · <a href="https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference">Command reference</a> · <a href="https://github.com/github/copilot-cli">github/copilot-cli</a></p>
+      <p>Features and model availability can vary by version, plan, policy, and preview status. Use <code>/help</code> as the source of truth for the installed CLI.</p>
+    </section>
+  </div>
+</main>
+
+<button class="print" onclick="window.print()">Print / Save PDF</button>
+<script>
+document.querySelectorAll('.copy').forEach(function (button) {
+  button.addEventListener('click', function () {
+    var text = button.parentElement.querySelector('.ptext').textContent.trim();
+    navigator.clipboard.writeText(text).then(function () {
+      button.textContent = 'Copied';
+      button.classList.add('done');
+      setTimeout(function () {
+        button.textContent = 'Copy';
+        button.classList.remove('done');
+      }, 1400);
+    });
+  });
+});
+</script>
+</body>
+</html>

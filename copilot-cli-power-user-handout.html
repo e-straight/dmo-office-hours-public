@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:," />
+<title>GitHub Copilot CLI - Power User Handout</title>
+<style>
+  :root {
+    --bg: #f6f8fa; --card: #fff; --text: #1f2328; --muted: #59636e;
+    --border: #d1d9e0; --blue: #0969da; --blue-soft: #ddf4ff;
+    --green: #1a7f37; --green-soft: #dafbe1; --amber: #9a6700;
+    --amber-soft: #fff8c5; --purple: #8250df; --purple-soft: #fbefff;
+    --red: #cf222e; --red-soft: #ffebe9; --header: #0d1117; --radius: 10px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 var(--font); }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code, kbd { font-family: var(--mono); font-size: 88%; }
+  code { background: #afb8c133; border-radius: 5px; padding: .15em .4em; }
+  kbd { background: #f6f8fa; border: 1px solid #afb8c1; border-bottom-width: 2px; border-radius: 5px; padding: 1px 5px; white-space: nowrap; }
+  .page { max-width: 1020px; margin: 0 auto; padding: 0 22px 48px; }
+  .hero { background: var(--header); color: #fff; padding: 28px 0 26px; margin-bottom: 20px; }
+  .brand { display: flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 650; margin-bottom: 13px; }
+  .brand svg { flex: none; }
+  .brand span:last-child { color: #ffffffb8; font-weight: 450; }
+  .eyebrow { display: inline-block; border: 1px solid #ffffff3d; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 650; }
+  h1 { margin: 9px 0 5px; font-size: 30px; line-height: 1.2; }
+  .hero p { margin: 0; color: #ffffffc9; font-size: 16px; }
+  .tabs { display: flex; gap: 7px; background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 5px; margin-bottom: 16px; }
+  .tabs a { flex: 1; text-align: center; border-radius: 999px; padding: 7px 12px; color: var(--muted); font-weight: 650; }
+  .tabs a.active { background: var(--blue); color: #fff; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; box-shadow: 0 1px 3px #1f23280a; }
+  .wide { grid-column: 1 / -1; }
+  .card h2 { display: flex; align-items: center; gap: 9px; margin: 0 0 11px; font-size: 17px; }
+  .card h3 { margin: 16px 0 6px; font-size: 14.5px; }
+  .num { display: grid; place-items: center; width: 26px; height: 26px; flex: none; border-radius: 50%; background: var(--blue); color: #fff; font-size: 13px; }
+  .num.green { background: var(--green); }
+  .num.purple { background: var(--purple); }
+  p { margin: 7px 0; }
+  ul, ol { margin: 7px 0; padding-left: 21px; }
+  li { margin: 5px 0; }
+  .note { border: 1px solid var(--border); border-left: 4px solid var(--blue); border-radius: 8px; background: var(--blue-soft); padding: 10px 12px; margin: 11px 0; font-size: 13.5px; }
+  .note.good { border-left-color: var(--green); background: var(--green-soft); }
+  .note.warn { border-left-color: var(--amber); background: var(--amber-soft); }
+  .note.power { border-left-color: var(--purple); background: var(--purple-soft); }
+  .note.danger { border-left-color: var(--red); background: var(--red-soft); }
+  .prompt { display: flex; gap: 9px; align-items: flex-start; background: #f6f8fa; border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; margin: 7px 0; }
+  .ptext { flex: 1; font-size: 13.5px; overflow-wrap: anywhere; }
+  .cmd .ptext { font-family: var(--mono); font-size: 12.5px; }
+  .copy { border: 1px solid var(--border); border-radius: 6px; background: #fff; color: var(--muted); padding: 3px 8px; font: 600 12px var(--font); cursor: pointer; }
+  .copy:hover, .copy.done { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .workflow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; margin: 12px 0; }
+  .phase { position: relative; border: 1px solid var(--border); border-top: 3px solid var(--blue); border-radius: 8px; padding: 10px; background: #fff; min-height: 88px; }
+  .phase:nth-child(2) { border-top-color: var(--purple); }
+  .phase:nth-child(3) { border-top-color: var(--green); }
+  .phase:nth-child(4) { border-top-color: var(--amber); }
+  .phase:nth-child(5) { border-top-color: var(--red); }
+  .phase b { display: block; font-size: 13px; margin-bottom: 4px; }
+  .phase span { color: var(--muted); font-size: 11.5px; line-height: 1.35; }
+  .agent-map { display: grid; grid-template-columns: 1fr auto 1.15fr auto 1.35fr auto 1.15fr auto 1fr; gap: 8px; align-items: center; margin: 13px 0; padding: 13px; border: 1px solid var(--border); border-radius: 12px; background: linear-gradient(135deg, #eef6ff, #fff 50%, #fbefff); }
+  .map-node { min-height: 88px; display: flex; flex-direction: column; justify-content: center; border: 1px solid var(--border); border-radius: 10px; padding: 10px; background: #fff; text-align: center; box-shadow: 0 4px 12px #1f23280d; }
+  .map-node.task { background: var(--header); border-color: var(--header); color: #fff; }
+  .map-node.task span { color: #ffffffa8; }
+  .map-node.route { border-top: 4px solid var(--blue); }
+  .map-node.review { border-top: 4px solid var(--purple); }
+  .map-node.output { border-top: 4px solid var(--green); background: var(--green-soft); }
+  .map-node b { font-size: 12.5px; margin-bottom: 3px; }
+  .map-node span { color: var(--muted); font-size: 11px; line-height: 1.3; }
+  .map-arrow { color: var(--muted); font-size: 18px; font-weight: 800; text-align: center; }
+  .agent-mini-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  .agent-mini { border: 1px solid var(--border); border-radius: 7px; padding: 6px 4px; background: #fff; font: 650 10.5px var(--mono); color: var(--text); }
+  .agent-mini:nth-child(2) { background: var(--purple-soft); color: var(--purple); }
+  .agent-mini:nth-child(3) { background: var(--green-soft); color: var(--green); }
+  .agent-mini:nth-child(4) { background: var(--amber-soft); color: var(--amber); }
+  .remote-map { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; gap: 8px; align-items: center; margin: 13px 0; }
+  .remote-node { min-height: 94px; display: flex; flex-direction: column; justify-content: center; text-align: center; border: 1px solid var(--border); border-radius: 11px; padding: 10px; background: #fff; }
+  .remote-node .visual-icon { display: grid; place-items: center; width: 34px; height: 34px; margin: 0 auto 6px; border-radius: 10px; background: var(--blue-soft); color: var(--blue); font: 800 15px var(--mono); }
+  .remote-node:nth-of-type(3) .visual-icon { background: var(--purple-soft); color: var(--purple); }
+  .remote-node:nth-of-type(5) .visual-icon { background: var(--amber-soft); color: var(--amber); }
+  .remote-node:nth-of-type(7) .visual-icon { background: var(--green-soft); color: var(--green); }
+  .remote-node b { font-size: 12.5px; }
+  .remote-node span { color: var(--muted); font-size: 11px; }
+  .capability-map { display: grid; grid-template-columns: repeat(5, 1fr) auto 1.25fr; gap: 7px; align-items: stretch; margin: 13px 0; }
+  .cap-tile, .cap-bundle { display: flex; flex-direction: column; justify-content: center; min-height: 82px; border: 1px solid var(--border); border-radius: 10px; padding: 9px; text-align: center; background: #fff; }
+  .cap-tile b, .cap-bundle b { font-size: 12px; }
+  .cap-tile span, .cap-bundle span { color: var(--muted); font-size: 10.5px; line-height: 1.3; }
+  .cap-tile:nth-child(1) { border-top: 4px solid var(--blue); }
+  .cap-tile:nth-child(2) { border-top: 4px solid var(--green); }
+  .cap-tile:nth-child(3) { border-top: 4px solid var(--purple); }
+  .cap-tile:nth-child(4) { border-top: 4px solid var(--amber); }
+  .cap-tile:nth-child(5) { border-top: 4px solid var(--red); }
+  .cap-plus { display: grid; place-items: center; color: var(--muted); font-weight: 800; }
+  .cap-bundle { border: 2px solid var(--purple); background: var(--purple-soft); }
+  .chronicle-map { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 7px; align-items: center; margin: 11px 0; padding: 10px; border: 1px solid var(--border); border-radius: 10px; background: #f6f8fa; }
+  .chronicle-node { min-height: 70px; display: flex; flex-direction: column; justify-content: center; text-align: center; border: 1px solid var(--border); border-radius: 8px; background: #fff; padding: 8px; }
+  .chronicle-node b { font-size: 11.5px; }
+  .chronicle-node span { color: var(--muted); font-size: 10.5px; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; margin: 10px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+  th { background: #f6f8fa; }
+  tr:last-child td { border-bottom: 0; }
+  .pill { display: inline-block; border-radius: 999px; background: var(--purple-soft); color: var(--purple); padding: 2px 7px; margin-left: 5px; font-size: 11px; font-weight: 700; }
+  .sources { font-size: 12.5px; color: var(--muted); }
+  .sources a { overflow-wrap: anywhere; }
+  .print { position: fixed; right: 18px; bottom: 18px; border: 0; border-radius: 8px; background: var(--green); color: #fff; padding: 10px 14px; font-weight: 650; cursor: pointer; box-shadow: 0 5px 18px #1f232833; }
+  @media (max-width: 760px) {
+    .grid, .workflow, .agent-map, .remote-map, .capability-map, .chronicle-map { grid-template-columns: 1fr; }
+    .wide { grid-column: auto; }
+    .tabs { border-radius: 10px; flex-direction: column; }
+    .phase { min-height: 0; }
+    .map-arrow, .cap-plus { transform: rotate(90deg); min-height: 20px; }
+    .agent-mini-stack { grid-template-columns: repeat(2, 1fr); }
+    .print { display: none; }
+  }
+  @media print {
+    body { background: #fff; font-size: 10.5px; }
+    .hero { background: #0d1117 !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; padding: 18px 0; }
+    .page { max-width: none; padding: 0 12px 18px; }
+    .tabs, .print, .copy { display: none; }
+    .grid { gap: 9px; }
+    .card { box-shadow: none; break-inside: avoid; padding: 13px 15px; }
+    .map-node, .terminal-window { box-shadow: none; }
+    a { color: inherit; }
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="page" style="padding-bottom:0">
+    <div class="brand">
+      <svg width="25" height="25" viewBox="0 0 16 16" fill="#fff" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.01 8.01 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82a7.5 7.5 0 0 0-4 0c-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A8 8 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>
+      <span>GitHub</span><span>Copilot CLI</span>
+    </div>
+    <span class="eyebrow">POWER USER</span>
+    <h1>Engineer the workflow, not just the prompt</h1>
+    <p>Use plans, autonomy, subagents, permissions, instructions, and review loops deliberately.</p>
+  </div>
+</header>
+
+<main class="page">
+  <nav class="tabs" aria-label="Handouts">
+    <a href="copilot-cli-quick-start-handout.html">Quick start</a>
+    <a class="active" href="copilot-cli-power-user-handout.html">Power user</a>
+  </nav>
+
+  <div class="note good"><strong>Power-user principle:</strong> give Copilot the smallest useful trust boundary, a concrete definition of done, and an independent verification step. More autonomy should come from better constraints, not less oversight.</div>
+
+  <div class="grid">
+    <section class="card wide">
+      <h2><span class="num">1</span> Use the high-reliability loop</h2>
+      <div class="workflow" aria-label="Explore, plan, implement, verify, land workflow">
+        <div class="phase"><b>Explore</b><span>Map the code, conventions, risks, and unknowns. No edits yet.</span></div>
+        <div class="phase"><b>Plan</b><span>Turn the goal into ordered tasks, checks, and rollback decisions.</span></div>
+        <div class="phase"><b>Implement</b><span>Make the smallest coherent change using existing patterns.</span></div>
+        <div class="phase"><b>Verify</b><span>Run targeted tests, inspect the diff, and challenge edge cases.</span></div>
+        <div class="phase"><b>Land</b><span>Commit, create the PR, handle review, and confirm CI.</span></div>
+      </div>
+      <div class="prompt"><span class="ptext">Read the authentication flow and its tests. Do not edit files. Return the request path, trust boundaries, existing extension points, likely risks, and the smallest safe place to add passwordless login.</span><button class="copy">Copy</button></div>
+      <div class="prompt"><span class="ptext">/plan Add passwordless login. Preserve existing password login, avoid schema changes if possible, include abuse controls and rollback, and identify the targeted tests required before implementation.</span><button class="copy">Copy</button></div>
+    </section>
+
+    <section class="card wide">
+      <h2><span class="num green">2</span> Route work to the right execution mode</h2>
+      <div class="agent-map" role="img" aria-label="A task routes through a selected model, specialized subagents, an independent review, and a verified result.">
+        <div class="map-node task"><b>Your task</b><span>goal · context · done criteria</span></div>
+        <div class="map-arrow">→</div>
+        <div class="map-node route"><b>Route</b><span>Auto or <code>/model</code><br>Standard · Plan · Autopilot</span></div>
+        <div class="map-arrow">→</div>
+        <div class="map-node">
+          <b>Specialists</b>
+          <div class="agent-mini-stack">
+            <span class="agent-mini">Explore</span><span class="agent-mini">Fleet</span>
+            <span class="agent-mini">Task</span><span class="agent-mini">Review</span>
+          </div>
+        </div>
+        <div class="map-arrow">→</div>
+        <div class="map-node review"><b>Rubber Duck</b><span>contrasting model · read-only critique</span></div>
+        <div class="map-arrow">→</div>
+        <div class="map-node output"><b>Verified output</b><span>tests · diff · PR</span></div>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Tool or mode</th><th>Best fit</th><th>Human checkpoint</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Standard</strong></td><td>Exploration, debugging, ambiguous work, and small edits.</td><td>Steer continuously.</td></tr>
+          <tr><td><strong><code>/plan</code></strong></td><td>Features, refactors, migrations, or work with several touch points.</td><td>Approve or edit the plan before code.</td></tr>
+          <tr><td><strong>Autopilot</strong></td><td>Well-defined, reversible tasks with reliable checks.</td><td>Set a continuation limit and inspect the final diff.</td></tr>
+          <tr><td><strong><code>/model</code></strong></td><td>Use Auto for variable workloads, or switch manually as task complexity changes.</td><td>Spend stronger reasoning on architecture, debugging, and review.</td></tr>
+          <tr><td><strong><code>/rubber-duck</code></strong></td><td>Get a read-only critique from a different model family to expose blind spots.</td><td>Use before implementation or after tests on non-trivial work.</td></tr>
+          <tr><td><strong><code>/fleet</code></strong> <span class="pill">evolving</span></td><td>Large work that splits into genuinely independent research or implementation threads.</td><td>Review the decomposition and integrate results.</td></tr>
+          <tr><td><strong><code>/delegate</code></strong></td><td>Asynchronous cloud work that should produce a branch and pull request.</td><td>Review the draft PR and CI.</td></tr>
+          <tr><td><strong><code>/review</code></strong></td><td>Bug-focused review of a diff or branch.</td><td>Validate high-confidence findings.</td></tr>
+          <tr><td><strong><code>/security-review</code></strong></td><td>Focused exploitable-vulnerability review.</td><td>Confirm exploitability and remediation.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note warn"><strong>Do not parallelize dependencies:</strong> fleet works best when subtasks can finish independently. Keep a single agent on a continuous investigation or change chain.</div>
+      <div class="prompt"><span class="ptext">/rubber-duck Critique this plan for missing edge cases, unsafe assumptions, rollback gaps, and tests that would pass without proving the feature works.</span><button class="copy">Copy</button></div>
+      <div class="note power"><strong>Cross-model check:</strong> Rubber Duck is read-only and automatically chooses a contrasting model when available. It adds latency and model usage, so reserve it for decisions where a second perspective is worth the cost.</div>
+    </section>
+
+    <section class="card wide">
+      <h2>Long-running VM + tmux pattern</h2>
+      <p>A Linux VM and <code>tmux</code> make a durable home for builds, prototypes, migrations, and investigations that should survive a dropped SSH connection. Remote control lets you monitor and steer the still-running CLI session from GitHub.com or GitHub Mobile.</p>
+      <div class="remote-map" role="img" aria-label="A phone or laptop connects through GitHub remote control to a VM, tmux, and Copilot CLI session.">
+        <div class="remote-node"><span class="visual-icon">PC</span><b>Laptop / phone</b><span>monitor and steer</span></div>
+        <div class="map-arrow">→</div>
+        <div class="remote-node"><span class="visual-icon">GH</span><b>GitHub remote</b><span>session link + permissions</span></div>
+        <div class="map-arrow">→</div>
+        <div class="remote-node"><span class="visual-icon">VM</span><b>Azure Linux VM</b><span>online compute</span></div>
+        <div class="map-arrow">→</div>
+        <div class="remote-node"><span class="visual-icon">&gt;_</span><b>tmux + Copilot</b><span>durable agent process</span></div>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Step</th><th>Command or action</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Start a durable shell</td><td><code>tmux new -s copilot</code></td><td>The process keeps running after SSH disconnects.</td></tr>
+          <tr><td>Start remotely steerable CLI</td><td><code>copilot --remote</code></td><td>Displays the GitHub/mobile session link and QR details.</td></tr>
+          <tr><td>Plan before autonomy</td><td><code>/plan</code>, then Autopilot</td><td>Give overnight work explicit tasks, checks, limits, and stop conditions.</td></tr>
+          <tr><td>Detach / return</td><td><kbd>Ctrl</kbd>+<kbd>B</kbd>, then <kbd>D</kbd> / <code>tmux attach -t copilot</code></td><td>Leave the VM session running and reconnect later.</td></tr>
+          <tr><td>Resume closed work</td><td><code>copilot --continue</code> or <code>/resume</code></td><td>Reload saved conversation context after the CLI exits.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="prompt"><span class="ptext">Before entering Autopilot, turn this plan into an overnight-safe runbook. Define the allowed tools, maximum scope, required checkpoints, test commands, stop conditions, artifacts to save, and what must wait for human approval.</span><button class="copy">Copy</button></div>
+      <div class="note warn"><strong>Remote is not cloud execution:</strong> the VM must remain online, the CLI session must still be active, and the working directory must be a GitHub-hosted repository. Use <code>/remote on</code> or <code>copilot --remote</code>; use <code>/remote off</code> when finished. If the machine should not remain running, consider <code>/delegate</code> instead.</div>
+      <p class="sources"><a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/steer-remotely">Remote steering</a> · <a href="https://docs.github.com/en/copilot/concepts/agents/copilot-cli/autopilot">Autopilot</a></p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">3</span> Design permission boundaries</h2>
+      <p>Pre-allow routine, narrow tools and continue prompting for risky actions.</p>
+      <div class="prompt cmd"><span class="ptext">copilot --allow-tool='shell(git:*)' --deny-tool='shell(git push)'</span><button class="copy">Copy</button></div>
+      <div class="prompt cmd"><span class="ptext">copilot --allow-tool='shell(bun test:*)' --allow-tool='write'</span><button class="copy">Copy</button></div>
+      <ul>
+        <li>Use <code>/reset-allowed-tools</code> when the task changes.</li>
+        <li>Use <code>/add-dir</code> only for paths the task truly needs.</li>
+        <li>Reserve <code>/allow-all</code> for isolated, disposable environments.</li>
+        <li>Enterprise policy may disable broad approval options.</li>
+      </ul>
+      <div class="note danger"><strong>Permission matching is not a sandbox.</strong> Review destructive commands, URL access, credential use, and writes outside the repository even when a pattern appears narrow.</div>
+    </section>
+
+    <section class="card">
+      <h2><span class="num purple">4</span> Build a concise instruction stack</h2>
+      <div class="table-wrap"><table>
+        <tbody>
+          <tr><td><code>~/.copilot/copilot-instructions.md</code></td><td>Your cross-project preferences</td></tr>
+          <tr><td><code>.github/copilot-instructions.md</code></td><td>Repository-wide commands and conventions</td></tr>
+          <tr><td><code>.github/instructions/*.instructions.md</code></td><td>Path-specific guidance</td></tr>
+          <tr><td><code>AGENTS.md</code></td><td>Agent guidance near relevant code</td></tr>
+        </tbody>
+      </table></div>
+      <p>Include build/test commands, architecture rules, generated-file warnings, and required checks. Keep instructions short, actionable, and non-conflicting.</p>
+      <div class="prompt"><span class="ptext">/init</span><button class="copy">Copy</button></div>
+      <div class="note power"><strong>Inspect what loaded:</strong> use <code>/instructions</code> and <code>/env</code>. The runtime retrieves relevant instructions dynamically, so scoped guidance beats one enormous file.</div>
+    </section>
+
+    <section class="card wide">
+      <h2><span class="num green">5</span> Turn repeated work into reusable capabilities</h2>
+      <div class="capability-map" role="img" aria-label="Instructions, skills, agents, MCP, and hooks can be bundled into a reusable plugin.">
+        <div class="cap-tile"><b>Instructions</b><span>project conventions</span></div>
+        <div class="cap-tile"><b>Skills</b><span>repeatable procedures</span></div>
+        <div class="cap-tile"><b>Agents</b><span>roles + guardrails</span></div>
+        <div class="cap-tile"><b>MCP</b><span>tools + data</span></div>
+        <div class="cap-tile"><b>Hooks / LSP</b><span>policy + intelligence</span></div>
+        <div class="cap-plus">→</div>
+        <div class="cap-bundle"><b>Plugin bundle</b><span>installable · versioned · shareable</span></div>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Extension point</th><th>Use it when</th><th>Typical location or command</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Skill</strong></td><td>A workflow repeats and needs steps, examples, guardrails, and a definition of done.</td><td><code>.github/skills/.../SKILL.md</code> or <code>~/.copilot/skills</code></td></tr>
+          <tr><td><strong>Custom agent</strong></td><td>A specialized role needs its own prompt, model, tools, guardrails, or output format.</td><td><code>.github/agents/*.agent.md</code>, <code>~/.copilot/agents/*.agent.md</code>, <code>/agent</code></td></tr>
+          <tr><td><strong>MCP server</strong></td><td>Copilot needs structured access to an external system or domain tool.</td><td><code>/mcp</code>, <code>.github/mcp.json</code></td></tr>
+          <tr><td><strong>Plugin</strong></td><td>You want to package and distribute agents, skills, MCP, or related capabilities together.</td><td><code>/plugin</code></td></tr>
+          <tr><td><strong>Hook</strong></td><td>Policy or automation must run before/after prompts or tool calls.</td><td>Repository or user hook configuration</td></tr>
+        </tbody>
+      </table></div>
+      <div class="prompt"><span class="ptext">Create a repository skill for release-note drafting. It must gather merged PRs since the previous tag, group customer-visible changes, link every item to its PR, flag uncertain wording, and never publish automatically.</span><button class="copy">Copy</button></div>
+      <div class="prompt"><span class="ptext">Create .github/agents/release-manager.agent.md with YAML frontmatter. Define its role, minimum tools, safety guardrails, required inputs, evidence-gathering steps, and a fixed reviewable Markdown output.</span><button class="copy">Copy</button></div>
+      <p>Custom-agent profiles are version-controlled Markdown, so the team can review and share the same role, tool limits, guardrails, and output expectations across Copilot surfaces. Use a plugin when you need to distribute a bundle of agents, skills, hooks, MCP, and LSP configuration together.</p>
+      <div class="prompt cmd"><span class="ptext">copilot plugin marketplace list</span><button class="copy">Copy</button></div>
+      <div class="note"><strong>Tool hygiene:</strong> the built-in GitHub MCP server is available by default. Add external MCP servers only when they provide necessary context, and scope their tools and data access deliberately.</div>
+      <p class="sources"><a href="https://github.blog/ai-and-ml/github-copilot/from-one-off-prompts-to-workflows-how-to-use-custom-agents-in-github-copilot-cli/">Custom agents: from prompts to workflows</a> · <a href="https://docs.github.com/en/copilot/concepts/agents/about-plugins">About plugins</a></p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">6</span> Keep sessions focused and searchable</h2>
+      <div class="chronicle-map" role="img" aria-label="CLI sessions flow into a searchable local and synced history, which Chronicle turns into insights.">
+        <div class="chronicle-node"><b>Sessions</b><span>prompts · tools · changes</span></div>
+        <div class="map-arrow">→</div>
+        <div class="chronicle-node"><b>Session history</b><span>resume · rename · share</span></div>
+        <div class="map-arrow">→</div>
+        <div class="chronicle-node"><b>Chronicle</b><span>search · standup · tips</span></div>
+      </div>
+      <div class="table-wrap"><table>
+        <tbody>
+          <tr><td><code>/session</code></td><td>Current session information</td></tr>
+          <tr><td><code>/resume</code></td><td>Return to previous work</td></tr>
+          <tr><td><code>/rename</code></td><td>Give recurring sessions recognizable names</td></tr>
+          <tr><td><code>/context</code></td><td>Visualize context usage</td></tr>
+          <tr><td><code>/usage</code></td><td>Review tokens and AI credits</td></tr>
+          <tr><td><code>/compact</code></td><td>Summarize accumulated context</td></tr>
+          <tr><td><code>/chronicle</code></td><td>Search history; generate standups, usage tips, cost tips, and instruction improvements</td></tr>
+          <tr><td><code>/share</code></td><td>Export a session to GitHub, Markdown, HTML, or a gist</td></tr>
+          <tr><td><code>/rewind</code></td><td>Rewind a turn and restore files</td></tr>
+          <tr><td><code>/new</code></td><td>Start unrelated work cleanly</td></tr>
+        </tbody>
+      </table></div>
+      <p>Long sessions are supported through automatic compaction, but one coherent objective per session produces cleaner decisions and summaries. Use Chronicle to learn from actual usage instead of relying on generic prompting advice.</p>
+      <div class="prompt"><span class="ptext">/chronicle improve</span><button class="copy">Copy</button></div>
+      <p class="sources"><a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/chronicle">Using CLI session data and Chronicle</a></p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num purple">7</span> Work across repositories</h2>
+      <p>Start from a trusted parent directory or add only the extra repositories required:</p>
+      <div class="prompt cmd"><span class="ptext">/add-dir /absolute/path/to/shared-library</span><button class="copy">Copy</button></div>
+      <div class="prompt cmd"><span class="ptext">/list-dirs</span><button class="copy">Copy</button></div>
+      <div class="prompt"><span class="ptext">Trace the authentication contract across @/path/api, @/path/web, and @/path/sdk. Do not edit. Identify incompatible assumptions and propose an order of operations that keeps each repository releasable.</span><button class="copy">Copy</button></div>
+      <div class="note warn"><strong>Coordinate commits:</strong> ask for a repository-by-repository plan, compatibility strategy, and test matrix before making cross-repo edits.</div>
+    </section>
+
+    <section class="card wide">
+      <h2><span class="num green">8</span> Separate maker and checker</h2>
+      <p>The implementing agent has context and momentum, but also shares its own assumptions. Use a fresh reviewer or a different model when risk warrants it.</p>
+      <div class="prompt"><span class="ptext">/review Review the current branch against main. Report only high-confidence correctness bugs, regressions, and missing tests. Ignore style. Do not edit files.</span><button class="copy">Copy</button></div>
+      <div class="prompt"><span class="ptext">Act as an independent verifier. Reconstruct the requirements from the issue and diff, run the smallest relevant test set, inspect error paths and rollback behavior, and identify anything that prevents merge. Do not change files.</span><button class="copy">Copy</button></div>
+      <div class="prompt"><span class="ptext">/security-review Focus on exploitable trust-boundary, authorization, injection, secret-handling, and unsafe-deserialization issues introduced by this diff.</span><button class="copy">Copy</button></div>
+      <div class="note good"><strong>Reliable landing sequence:</strong> targeted tests → diff review → independent review → full required checks → PR → CI/review follow-through.</div>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">9</span> Script repeatable one-shot work</h2>
+      <p>Use programmatic mode when inputs, permissions, and output shape are predictable:</p>
+      <div class="prompt cmd"><span class="ptext">copilot -p "Summarize the current diff and list release-note-worthy changes."</span><button class="copy">Copy</button></div>
+      <p>For automation, make the prompt deterministic, constrain allowed tools, and require machine-checkable output. Avoid broad autonomous write access in CI.</p>
+      <div class="note power"><strong>Provider choice:</strong> use <code>/model</code> for the installed GitHub-hosted catalog, or <code>copilot help providers</code> for BYOK setup. Copilot CLI supports OpenAI-compatible endpoints—including local Ollama, vLLM, and Foundry Local—plus Azure OpenAI and Anthropic providers.</div>
+      <ul>
+        <li>Custom models must support streaming and tool calling; a context window of at least 128k is recommended.</li>
+        <li>Use <code>COPILOT_OFFLINE=true</code> for isolated operation, but full isolation requires a local or on-premises provider.</li>
+        <li>Subagents inherit the configured provider; <code>/delegate</code> still transfers work to GitHub's cloud agent.</li>
+      </ul>
+      <p class="sources"><a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/use-byok-models">Using your own LLM models</a></p>
+    </section>
+
+    <section class="card">
+      <h2><span class="num purple">10</span> Power shortcuts</h2>
+      <div class="table-wrap"><table>
+        <tbody>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Stash or restore the current prompt</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>Q</kbd></td><td>Queue a prompt</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>X</kbd>, then <kbd>B</kbd></td><td>Move the current task to background</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>O</kbd></td><td>Open the most recent link</td></tr>
+          <tr><td><kbd>Esc</kbd> twice</td><td>Interrupt work or stop agents</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>G</kbd></td><td>Edit the current prompt in <code>$EDITOR</code></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="card wide">
+      <h2>Operating checklist</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Before</th><th>During</th><th>Before landing</th></tr></thead>
+        <tbody><tr>
+          <td>Commit or stash work; define goal, constraints, trust boundary, tests, and rollback.</td>
+          <td>Watch tool requests; correct wrong assumptions early; keep artifacts and plans visible.</td>
+          <td>Inspect the diff; run required checks; use a checker pass; review secrets, migrations, and CI.</td>
+        </tr></tbody>
+      </table></div>
+      <div class="note warn"><strong>Preview and evolving features:</strong> fleet, autopilot behavior, cloud/local sandboxes, scheduling, experimental commands, and some session features may vary by CLI version or organization policy. Confirm with <code>/help</code>, <code>/experimental</code>, and current GitHub Docs.</div>
+    </section>
+
+    <section class="card wide sources">
+      <h2>Official and implementation sources</h2>
+      <p><a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices">CLI best practices</a> · <a href="https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference">Command reference</a> · <a href="https://docs.github.com/en/copilot/concepts/agents/copilot-cli/autopilot">Autopilot</a> · <a href="https://docs.github.com/en/copilot/concepts/agents/copilot-cli/fleet">Fleet</a> · <a href="https://docs.github.com/en/copilot/concepts/agents/copilot-cli/rubber-duck">Rubber Duck</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/steer-remotely">Remote steering</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/chronicle">Chronicle</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/delegate-tasks-to-cca">Delegation</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-custom-instructions">Custom instructions</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-skills">Skills</a> · <a href="https://docs.github.com/en/copilot/concepts/agents/about-plugins">Plugins</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/use-byok-models">BYOK and local models</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/configure-copilot-cli">Permissions</a></p>
+      <p><a href="https://github.com/github/copilot-cli">github/copilot-cli</a> · Research inputs: <code>github/copilot-host</code> and <code>github/copilot-agent-runtime</code>.</p>
+      <p>The host/runtime research informed the guidance on layered permissions, scoped instruction retrieval, MCP wiring, and subagents as isolated child chats. User-facing behavior should always be confirmed against current docs and <code>/help</code>.</p>
+      <p>Builder context from the supplied research: <a href="https://x.com/_Evan_Boyle/status/2032238387244253520">multi-model subagents</a> · <a href="https://x.com/_Evan_Boyle/status/2041286001046499497">Rubber Duck</a> · <a href="https://x.com/_Evan_Boyle/status/2043717618927091823">remote control</a> · <a href="https://x.com/_Evan_Boyle/status/2060834828673765468">Autopilot for long runs</a> · <a href="https://x.com/_Evan_Boyle/status/2027874980692893842">plugins and marketplaces</a> · <a href="https://x.com/github/status/2059820399085625417">custom agents</a>.</p>
+    </section>
+  </div>
+</main>
+
+<button class="print" onclick="window.print()">Print / Save PDF</button>
+<script>
+document.querySelectorAll('.copy').forEach(function (button) {
+  button.addEventListener('click', function () {
+    var text = button.parentElement.querySelector('.ptext').textContent.trim();
+    navigator.clipboard.writeText(text).then(function () {
+      button.textContent = 'Copied';
+      button.classList.add('done');
+      setTimeout(function () {
+        button.textContent = 'Copy';
+        button.classList.remove('done');
+      }, 1400);
+    });
+  });
+});
+</script>
+</body>
+</html>
