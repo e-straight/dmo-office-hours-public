@@ -198,6 +198,16 @@
     </section>
 
     <section class="card wide">
+      <h2>Optional: Connect Microsoft 365 with Work IQ</h2>
+      <p>Work IQ lets Copilot use permitted context from your email, meetings, Teams messages, documents, and workplace directory. Inside Copilot CLI, add the official plugin marketplace once, then install Work IQ:</p>
+      <div class="prompt cmd"><span class="ptext">/plugin marketplace add github/copilot-plugins</span><button class="copy">Copy</button></div>
+      <div class="prompt cmd"><span class="ptext">/plugin install workiq@copilot-plugins</span><button class="copy">Copy</button></div>
+      <p>Restart Copilot CLI after installation, then try: <code>What are my upcoming meetings this week?</code></p>
+      <div class="note"><strong>Organization setup required:</strong> Work IQ requires Node.js, an assigned usage-based billing plan, and Microsoft Entra administrative consent before it can access Microsoft 365 organization data.</div>
+      <p class="sources">See Microsoft's <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/work-iq/cli">Work IQ CLI installation guide</a> for current prerequisites, setup, and privacy details.</p>
+    </section>
+
+    <section class="card wide">
       <h2><span class="num">3</span> Run your first task</h2>
       <div class="steps" aria-label="First task workflow">
         <div class="step"><b>Explore</b><span>Ask how the project works before changing it.</span></div>
@@ -287,7 +297,7 @@
 
     <section class="card wide sources">
       <h2>Official sources</h2>
-      <p><a href="https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-copilot-cli">About Copilot CLI</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli">Install Copilot CLI</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/overview">Use Copilot CLI</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices">Best practices</a> · <a href="https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference">Command reference</a> · <a href="https://github.com/github/copilot-cli">github/copilot-cli</a></p>
+      <p><a href="https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-copilot-cli">About Copilot CLI</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli">Install Copilot CLI</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/overview">Use Copilot CLI</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices">Best practices</a> · <a href="https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference">Command reference</a> · <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/work-iq/cli">Microsoft Work IQ CLI</a> · <a href="https://github.com/github/copilot-cli">github/copilot-cli</a></p>
       <p>Features and model availability can vary by version, plan, policy, and preview status. Use <code>/help</code> as the source of truth for the installed CLI.</p>
     </section>
   </div>
