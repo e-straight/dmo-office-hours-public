@@ -198,6 +198,18 @@
     </section>
 
     <section class="card wide">
+      <h2>What is a plugin?</h2>
+      <p><strong>Think of a plugin like an app for Copilot CLI.</strong> Copilot is useful on its own, and a plugin adds a packaged set of extra abilities for a particular kind of work. Instead of asking you to configure several pieces by hand, one installation can give Copilot specialist helpers, reusable tasks, automatic guardrails, connections to other services, or better awareness of code.</p>
+      <ul>
+        <li><strong>A marketplace is the catalog:</strong> it tells Copilot where trusted plugin packages can be found.</li>
+        <li><strong>A plugin is the package:</strong> installing it adds its capabilities to Copilot CLI so they can be reused across projects.</li>
+        <li><strong>You still control access:</strong> installing a plugin does not bypass your approvals, account permissions, or organization policies.</li>
+      </ul>
+      <div class="note"><strong>Work IQ example:</strong> the Work IQ plugin adds the connection Copilot needs to answer questions using Microsoft 365 information you are already permitted to access.</div>
+      <p class="sources">Learn more in GitHub's <a href="https://docs.github.com/en/copilot/concepts/agents/about-plugins">plain-language plugin overview</a> and <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/plugins-finding-installing">plugin installation guide</a>.</p>
+    </section>
+
+    <section class="card wide">
       <h2>Optional: Connect Microsoft 365 with Work IQ</h2>
       <p>Work IQ lets Copilot use permitted context from your email, meetings, Teams messages, documents, and workplace directory. Inside Copilot CLI, add the official plugin marketplace once, then install Work IQ:</p>
       <div class="prompt cmd"><span class="ptext">/plugin marketplace add github/copilot-plugins</span><button class="copy">Copy</button></div>
@@ -297,7 +309,7 @@
 
     <section class="card wide sources">
       <h2>Official sources</h2>
-      <p><a href="https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-copilot-cli">About Copilot CLI</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli">Install Copilot CLI</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/overview">Use Copilot CLI</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices">Best practices</a> · <a href="https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference">Command reference</a> · <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/work-iq/cli">Microsoft Work IQ CLI</a> · <a href="https://github.com/github/copilot-cli">github/copilot-cli</a></p>
+      <p><a href="https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-copilot-cli">About Copilot CLI</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli">Install Copilot CLI</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/overview">Use Copilot CLI</a> · <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices">Best practices</a> · <a href="https://docs.github.com/en/copilot/concepts/agents/about-plugins">About plugins</a> · <a href="https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference">Command reference</a> · <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/work-iq/cli">Microsoft Work IQ CLI</a> · <a href="https://github.com/github/copilot-cli">github/copilot-cli</a></p>
       <p>Features and model availability can vary by version, plan, policy, and preview status. Use <code>/help</code> as the source of truth for the installed CLI.</p>
     </section>
   </div>
