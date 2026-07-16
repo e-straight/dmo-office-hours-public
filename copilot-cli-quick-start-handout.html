@@ -205,6 +205,16 @@
         <li><strong>A plugin is the package:</strong> installing it adds its capabilities to Copilot CLI so they can be reused across projects.</li>
         <li><strong>You still control access:</strong> installing a plugin does not bypass your approvals, account permissions, or organization policies.</li>
       </ul>
+      <p>A plugin can contain any combination of the following pieces; it does not need to include all of them:</p>
+      <div class="table-wrap"><table>
+        <tbody>
+          <tr><td><strong>MCP configuration</strong></td><td>Connections that give Copilot tools and permitted context from another system.</td></tr>
+          <tr><td><strong>Skills</strong></td><td>Reusable instructions for completing a particular kind of task.</td></tr>
+          <tr><td><strong>Custom agents</strong></td><td>Specialized assistants designed for a particular role.</td></tr>
+          <tr><td><strong>Hooks</strong></td><td>Automatic actions or guardrails triggered at key moments.</td></tr>
+          <tr><td><strong>LSP configuration</strong></td><td>Connections that help Copilot understand and navigate code more precisely.</td></tr>
+        </tbody>
+      </table></div>
       <div class="note"><strong>Work IQ example:</strong> the Work IQ plugin adds the connection Copilot needs to answer questions using Microsoft 365 information you are already permitted to access.</div>
       <p class="sources">Learn more in GitHub's <a href="https://docs.github.com/en/copilot/concepts/agents/about-plugins">plain-language plugin overview</a> and <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/plugins-finding-installing">plugin installation guide</a>.</p>
     </section>
